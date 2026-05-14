@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protexa AI Office</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #07111C; color: #fff; min-height: 100vh; }
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #0D1B2A; } ::-webkit-scrollbar-thumb { background: #29B6D8; border-radius: 4px; }
+
+/* HEADER */
+.app-header { background: #0D1B2A; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.app-logo { display: flex; align-items: center; gap: 10px; }
+.app-logo-name { font-size: 16px; font-weight: 500; color: #fff; }
+.app-logo-sub { font-size: 8px; color: #29B6D8; letter-spacing: 0.14em; display: block; }
+.app-date { color: rgba(255,255,255,0.4); font-size: 12px; }
+.app-status { display: flex; align-items: center; gap: 6px; color: #1D9E75; font-size: 12px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #1D9E75; }
+
+/* LAYOUT */
+.app-body { display: flex; min-height: calc(100vh - 56px); }
+
+/* SIDEBAR */
+.sidebar { width: 220px; background: #0D1B2A; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px 0; flex-shrink: 0; }
+.sidebar-section { padding: 8px 16px 4px; color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; transition: background 0.15s; border-left: 2px solid transparent; font-size: 13px; color: rgba(255,255,255,0.6); }
+.nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.nav-item.active { background: rgba(41,182,216,0.12); border-left-color: #29B6D8; color: #fff; }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+/* MAIN */
+.main { flex: 1; padding: 24px; overflow-y: auto; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* PAGE HEADER */
+.page-header { margin-bottom: 24px; }
+.page-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(41,182,216,0.12); border: 0.5px solid rgba(41,182,216,0.3); border-radius: 20px; padding: 4px 12px; color: #29B6D8; font-size: 11px; font-weight: 500; margin-bottom: 8px; }
+.page-title { font-size: 22px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+.page-sub { color: rgba(255,255,255,0.5); font-size: 13px; }
+
+/* STATS CARDS */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; }
+.stat-label { color: rgba(255,255,255,0.45); font-size: 11px; margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 600; color: #29B6D8; letter-spacing: -0.02em; }
+.stat-sub { color: rgba(255,255,255,0.35); font-size: 11px; margin-top: 3px; }
+
+/* TABLES */
+.table-wrap { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+.table-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+.table-title { font-size: 13px; font-weight: 500; color: #fff; }
+.table-count { background: rgba(41,182,216,0.15); color: #29B6D8; font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 500; text-align: left; padding: 10px 14px; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+td { padding: 10px 14px; font-size: 12px; color: rgba(255,255,255,0.8); border-bottom: 0.5px solid rgba(255,255,255,0.04); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+.client-name { font-weight: 500; color: #fff; font-size: 12px; }
+.client-email { color: rgba(255,255,255,0.4); font-size: 11px; }
+
+/* BADGES */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; }
+.badge-premium { background: rgba(255,215,0,0.15); color: #FFD700; }
+.badge-good { background: rgba(29,158,117,0.15); color: #1D9E75; }
+.badge-mid { background: rgba(239,159,39,0.15); color: #EF9F27; }
+.badge-basic { background: rgba(226,75,74,0.15); color: #E24B4A; }
+.badge-high { background: rgba(192,0,0,0.2); color: #FF6B6B; }
+.badge-mid-pri { background: rgba(255,140,0,0.2); color: #FFA500; }
+.badge-low { background: rgba(128,128,128,0.2); color: #aaa; }
+
+/* PRIORITY INDICATOR */
+.pri-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.pri-high { background: #FF6B6B; }
+.pri-mid { background: #FFA500; }
+.pri-low { background: #888; }
+
+/* SCORE */
+.score-badge { width: 28px; height: 28px; border-radius: 50%; background: rgba(41,182,216,0.15); border: 1px solid rgba(41,182,216,0.3); display: inline-flex; align-items: center; justify-content: center; color: #29B6D8; font-size: 11px; font-weight: 600; }
+
+/* EURO */
+.euro { color: #29B6D8; font-weight: 500; }
+
+/* EMAIL TEMPLATES */
+.email-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.email-card { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; }
+.email-card-title { font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.email-subject { background: rgba(41,182,216,0.08); border: 0.5px solid rgba(41,182,216,0.2); border-radius: 6px; padding: 6px 10px; color: #29B6D8; font-size: 11px; margin-bottom: 10px; }
+.email-subject span { color: rgba(255,255,255,0.4); font-size: 10px; }
+.email-body { color: rgba(255,255,255,0.7); font-size: 12px; line-height: 1.7; white-space: pre-line; }
+.copy-btn { margin-top: 10px; background: rgba(41,182,216,0.12); border: 0.5px solid rgba(41,182,216,0.25); color: #29B6D8; font-size: 11px; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.copy-btn:hover { background: rgba(41,182,216,0.22); }
+
+/* SCRIPTS */
+.script-card { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.script-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.script-client { font-size: 13px; font-weight: 500; color: #fff; }
+.script-amount { color: #29B6D8; font-size: 13px; font-weight: 500; }
+.script-text { color: rgba(255,255,255,0.75); font-size: 13px; line-height: 1.7; font-style: italic; border-left: 2px solid #29B6D8; padding-left: 12px; margin: 10px 0; }
+.script-propose { color: rgba(255,255,255,0.5); font-size: 11px; }
+
+/* CAMPAIGN */
+.campaign-card { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+.campaign-header { background: rgba(41,182,216,0.1); border-bottom: 0.5px solid rgba(41,182,216,0.2); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+.campaign-title { font-size: 14px; font-weight: 500; color: #fff; }
+.campaign-target { color: #29B6D8; font-size: 12px; }
+.campaign-body { padding: 16px 18px; }
+.campaign-section { margin-bottom: 14px; }
+.campaign-section-title { color: rgba(255,255,255,0.4); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.campaign-text { color: rgba(255,255,255,0.75); font-size: 12px; line-height: 1.7; white-space: pre-line; }
+
+/* FOLLOW-UP */
+.followup-row { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 2fr; gap: 10px; align-items: center; }
+.followup-name { font-size: 12px; font-weight: 500; color: #fff; }
+.followup-sub { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+/* OFFICE PLAN */
+.plan-row { display: grid; grid-template-columns: 80px 1fr 1fr 120px; gap: 12px; align-items: center; background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
+.plan-time { color: #29B6D8; font-size: 12px; font-weight: 500; }
+.plan-action { font-size: 13px; color: #fff; font-weight: 500; }
+.plan-detail { font-size: 11px; color: rgba(255,255,255,0.5); }
+.plan-pri { font-size: 11px; font-weight: 500; }
+.plan-pri.urgent { color: #FF6B6B; }
+.plan-pri.today { color: #FFA500; }
+.plan-pri.week { color: #29B6D8; }
+
+/* TABS */
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 0.5px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); background: transparent; font-family: inherit; transition: all 0.15s; }
+.tab.active { background: #29B6D8; color: #0D1B2A; border-color: #29B6D8; font-weight: 500; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* INSIGHT CARDS */
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.insight-card { background: #0D1B2A; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; }
+.insight-icon { font-size: 22px; margin-bottom: 8px; }
+.insight-title { font-size: 12px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+.insight-text { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.insight-value { font-size: 18px; font-weight: 600; color: #29B6D8; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="2.8" fill="#29B6D8"/>
+      <circle cx="14" cy="14" r="6" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+      <circle cx="14" cy="14" r="10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2"/>
+      <path d="M14 4A10 10 0 0 1 24 14" stroke="#29B6D8" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <path d="M14 24A10 10 0 0 1 4 14" stroke="#1A4A6E" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+    </svg>
+    <div>
+      <span class="app-logo-name">Protexa AI Office</span>
+      <span class="app-logo-sub">INSURANCE · RISK · ADVISORY</span>
+    </div>
+  </div>
+  <div class="app-date" id="appDate"></div>
+  <div class="app-status"><div class="status-dot"></div> 6 Agents Online</div>
+</header>
+
+<div class="app-body">
+
+<nav class="sidebar">
+  <div class="sidebar-section">Πίνακας Ελέγχου</div>
+  <div class="nav-item active" onclick="showPage('office')"><span class="nav-icon">🏢</span> Office Manager</div>
+  <div class="sidebar-section" style="margin-top:8px">AI Agents</div>
+  <div class="nav-item" onclick="showPage('intelligence')"><span class="nav-icon">🧠</span> Client Intelligence</div>
+  <div class="nav-item" onclick="showPage('sales')"><span class="nav-icon">💼</span> Sales Agent</div>
+  <div class="nav-item" onclick="showPage('email')"><span class="nav-icon">✉️</span> Email Agent</div>
+  <div class="nav-item" onclick="showPage('followup')"><span class="nav-icon">🔄</span> Follow-Up Agent</div>
+  <div class="nav-item" onclick="showPage('campaign')"><span class="nav-icon">📢</span> Campaign Agent</div>
+  <div class="nav-item" onclick="showPage('marketing')"><span class="nav-icon">🗓️</span> Monthly Marketing</div>
+  <div class="sidebar-section" style="margin-top:8px">Υπάλληλος</div>
+  <div class="nav-item" onclick="showPage('natalia')"><span class="nav-icon">👩‍💼</span> Natalia Dashboard</div>
+  <div class="nav-item" onclick="showPage('renewal')"><span class="nav-icon">🔄</span> Renewal Agent</div>
+  <div class="sidebar-section" style="margin-top:8px">Δεδομένα</div>
+  <div class="nav-item" onclick="showPage('clients')"><span class="nav-icon">👥</span> Top 30 Πελάτες</div>
+  <div class="nav-item" onclick="showPage('katikia')"><span class="nav-icon">🏠</span> Στόχοι Κατοικίας</div>
+  <div class="nav-item" onclick="showPage('zwis')"><span class="nav-icon">❤️</span> Στόχοι Ζωής</div>
+</nav>
+
+<main class="main">
+
+<!-- OFFICE MANAGER -->
+<div class="page active" id="page-office">
+  <div class="page-header">
+    <div class="page-badge">🏢 Agent 8</div>
+    <div class="page-title">AI Office Manager</div>
+    <div class="page-sub">Ημερήσιο πλάνο εργασίας — Protexa</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Σύνολο Πελατών</div>
+      <div class="stat-value">938</div>
+      <div class="stat-sub">Ενεργοί 2025</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Σύνολο Ασφαλίστρων</div>
+      <div class="stat-value">€415.792</div>
+      <div class="stat-sub">Ετήσια παραγωγή</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Premium Πελάτες</div>
+      <div class="stat-value">63</div>
+      <div class="stat-sub">>1.000€/έτος</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Cross-Sell Ευκαιρίες</div>
+      <div class="stat-value">913</div>
+      <div class="stat-sub">Πελάτες με κενά</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">📅 Πλάνο Ημέρας — Σειρά Προτεραιότητας</span><span class="table-count">6 ενέργειες</span></div>
+    <div style="padding:14px 18px; display:flex; flex-direction:column; gap:8px;">
+      <div class="plan-row">
+        <div class="plan-time">09:00</div>
+        <div><div class="plan-action">🌟 Premium VIP Calls</div><div class="plan-detail">Top 5 πελάτες >€5.000 — Μουτεβέλης, Πρόοδος, Τσακάλης, Πρεσβεία Ρωσίας, Γεωργία</div></div>
+        <div class="plan-detail">Προσφορά Κατοικίας + Ζωής + Νομική</div>
+        <div class="plan-pri urgent">🔴 Άμεσο</div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-time">10:30</div>
+        <div><div class="plan-action">🏠 Καμπάνια Κατοικίας</div><div class="plan-detail">10 πελάτες Auto χωρίς κατοικία — Top Υψηλής Προτεραιότητας</div></div>
+        <div class="plan-detail">Script κατοικίας + έκπτωση ΕΝΦΙΑ</div>
+        <div class="plan-pri urgent">🔴 Σήμερα</div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-time">12:00</div>
+        <div><div class="plan-action">✉️ Email Batch</div><div class="plan-detail">Στείλε emails σε όσους είχαν email και δεν απάντησαν σε τηλεφώνημα</div></div>
+        <div class="plan-detail">Email Agent — Template Κατοικίας</div>
+        <div class="plan-pri today">🟡 Σήμερα</div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-time">14:00</div>
+        <div><div class="plan-action">❤️ Ζωής / Οικογένεια</div><div class="plan-detail">10 πελάτες >€500 χωρίς ασφάλεια ζωής</div></div>
+        <div class="plan-detail">Script ζωής — προστασία οικογένειας</div>
+        <div class="plan-pri today">🟡 Σήμερα</div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-time">15:30</div>
+        <div><div class="plan-action">🔄 Follow-Up Tracker</div><div class="plan-detail">Ενημέρωσε τον Follow-Up πίνακα με αποτελέσματα σημερινής ημέρας</div></div>
+        <div class="plan-detail">Καταγραφή εκκρεμοτήτων</div>
+        <div class="plan-pri week">🔵 Εβδομάδα</div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-time">16:30</div>
+        <div><div class="plan-action">📊 KPI Ανασκόπηση</div><div class="plan-detail">Πόσες επαφές, πόσες προσφορές, πόσα κλεισίματα</div></div>
+        <div class="plan-detail">Πλάνο αυριανής ημέρας</div>
+        <div class="plan-pri week">🔵 Εβδομάδα</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-icon">💡</div>
+      <div class="insight-title">Μεγαλύτερη Ευκαιρία</div>
+      <div class="insight-text">839 πελάτες έχουν αυτοκίνητο αλλά δεν έχουν κατοικία. Πρώτη καμπάνια.</div>
+      <div class="insight-value">+€150K δυνητικά</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">⚠️</div>
+      <div class="insight-title">Πού Χάνεις Λεφτά</div>
+      <div class="insight-text">728 βασικοί πελάτες &lt;€500 — εκ των οποίων πολλοί έχουν μόνο 1 συμβόλαιο.</div>
+      <div class="insight-value">Χαμηλή αξιοποίηση</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🎯</div>
+      <div class="insight-title">Πρώτο Campaign</div>
+      <div class="insight-text">Κατοικία + ΕΝΦΙΑ έκπτωση — άμεσο αποτέλεσμα, εύκολο κλείσιμο.</div>
+      <div class="insight-value">Τρέξε αυτή την εβδομάδα</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT INTELLIGENCE -->
+<div class="page" id="page-intelligence">
+  <div class="page-header">
+    <div class="page-badge">🧠 Agent 5</div>
+    <div class="page-title">AI Client Intelligence</div>
+    <div class="page-sub">Ανάλυση χαρτοφυλακίου — ποιος αξίζει, τι του λείπει, πότε τον παίρνεις</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">Premium >1.000€</div><div class="stat-value">63</div><div class="stat-sub">VIP πελάτες</div></div>
+    <div class="stat-card"><div class="stat-label">Καλοί 700-1.000€</div><div class="stat-value">54</div><div class="stat-sub">Ανάπτυξης</div></div>
+    <div class="stat-card"><div class="stat-label">Μεσαίοι 500-700€</div><div class="stat-value">93</div><div class="stat-sub">Cross-sell στόχοι</div></div>
+    <div class="stat-card"><div class="stat-label">Βασικοί &lt;500€</div><div class="stat-value">728</div><div class="stat-sub">Χαμηλή αξία</div></div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card"><div class="insight-icon">🚗</div><div class="insight-title">Μόνο Αυτοκίνητο</div><div class="insight-text">Πελάτες με αποκλειστικά auto — πρώτοι στόχοι για κατοικία.</div><div class="insight-value">~795 πελάτες</div></div>
+    <div class="insight-card"><div class="insight-icon">🏠</div><div class="insight-title">Auto χωρίς Κατοικία</div><div class="insight-text">Έχουν αυτοκίνητο αλλά δεν έχουν ασφάλεια κατοικίας.</div><div class="insight-value">839 πελάτες</div></div>
+    <div class="insight-card"><div class="insight-icon">❤️</div><div class="insight-title">Χωρίς Ζωής</div><div class="insight-text">Πελάτες >€300 χωρίς ασφάλεια ζωής — ευκαιρία υψηλής αξίας.</div><div class="insight-value">854 πελάτες</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">🏆 Top 30 Πελάτες — Κατά Ετήσιο Ασφάλιστρο</span><span class="table-count">30 εγγραφές</span></div>
+    <table id="intelligenceTable">
+      <thead><tr><th>#</th><th>Πελάτης</th><th>Email</th><th>Ασφάλιστρα 2025</th><th>Κλάδοι</th><th>Κατηγορία</th><th>Score</th></tr></thead>
+      <tbody id="intelligenceTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SALES AGENT -->
+<div class="page" id="page-sales">
+  <div class="page-header">
+    <div class="page-badge">💼 Agent 1</div>
+    <div class="page-title">AI Sales Agent — Cross-Selling</div>
+    <div class="page-sub">Top 20 ευκαιρίες cross-selling — Υψηλής Προτεραιότητας</div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">🎯 Cross-Selling Plan — Υψηλή Προτεραιότητα</span><span class="table-count">20 ευκαιρίες</span></div>
+    <table>
+      <thead><tr><th>#</th><th>Πελάτης</th><th>Τι Έχει</th><th>Τι να Προτείνω</th><th>Ασφάλιστρα</th><th>Προτεραιότητα</th></tr></thead>
+      <tbody id="salesTbody"></tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">📞 Scripts Τηλεφώνου — Top 20</span></div>
+    <div id="scriptsContainer" style="padding: 14px 18px; display: flex; flex-direction: column; gap: 10px;"></div>
+  </div>
+</div>
+
+<!-- EMAIL AGENT -->
+<div class="page" id="page-email">
+  <div class="page-header">
+    <div class="page-badge">✉️ Agent 2</div>
+    <div class="page-title">AI Email Agent</div>
+    <div class="page-sub">Έτοιμα email templates για κάθε περίσταση</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('email','katikia-email')">🏠 Κατοικία</button>
+    <button class="tab" onclick="showTab('email','zwis-email')">❤️ Ζωής</button>
+    <button class="tab" onclick="showTab('email','followup-email')">🔄 Follow-Up</button>
+    <button class="tab" onclick="showTab('email','vip-email')">⭐ VIP</button>
+    <button class="tab" onclick="showTab('email','enfia-email')">🏛️ ΕΝΦΙΑ</button>
+  </div>
+
+  <div class="tab-content active" id="tab-katikia-email">
+    <div class="email-cards">
+      <div class="email-card">
+        <div class="email-card-title">📧 Email — Πρόταση Κατοικίας</div>
+        <div class="email-subject"><span>Subject: </span>Ασφαλίστε το σπίτι σας — Προσφορά από €8/μήνα</div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ],
+
+Παρακολουθώ τη συνεργασία μας και διαπιστώνω ότι δεν έχετε ακόμα ασφάλεια κατοικίας.
+
+Θα ήθελα να σας ενημερώσω ότι έχουμε προγράμματα από €8–12 τον μήνα που καλύπτουν:
+• Πυρκαγιά και σεισμό
+• Πλημμύρα και διαρροή νερού
+• Κλοπή και αστική ευθύνη
+
+Επιπλέον, υπάρχει δυνατότητα έκπτωσης στον ΕΝΦΙΑ έως 20%, εφόσον πληρούνται οι νόμιμες προϋποθέσεις.
+
+Μπορώ να σας ετοιμάσω μια προσφορά χωρίς καμία δέσμευση.
+
+Με εκτίμηση,
+Protexa Insurance · Risk · Advisory
+📧 protexagroup@gmail.com</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+      <div class="email-card">
+        <div class="email-card-title">📱 Viber/SMS — Κατοικία</div>
+        <div class="email-subject"><span>Σύντομο μήνυμα: </span></div>
+        <div class="email-body">Καλημέρα [ΟΝΟΜΑ]! 
+
+Βλέπω ότι δεν έχετε ακόμα ασφάλεια κατοικίας. Έχουμε προγράμματα από €8/μήνα με κάλυψη για φωτιά, σεισμό και πλημμύρα — και δυνατότητα έκπτωσης ΕΝΦΙΑ έως 20%.
+
+Θέλετε μια ενδεικτική προσφορά;
+
+Protexa | 2110080312</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-zwis-email">
+    <div class="email-cards">
+      <div class="email-card">
+        <div class="email-card-title">📧 Email — Ασφάλεια Ζωής</div>
+        <div class="email-subject"><span>Subject: </span>Μια σκέψη για την οικογένειά σας</div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ],
+
+Χαίρομαι που συνεχίζουμε τη συνεργασία μας.
+
+Θα ήθελα να μοιραστώ μαζί σας κάτι που πολλοί πελάτες μας βρίσκουν χρήσιμο: μια ασφάλεια ζωής που προστατεύει την οικογένειά σας σε περίπτωση απρόβλεπτου γεγονότος.
+
+Με €40–60 τον μήνα, μπορείτε να έχετε:
+• Κάλυψη ζωής
+• Προστασία δανείου
+• Εφάπαξ ποσό για την οικογένεια
+
+Είναι μια απόφαση που αξίζει να συζητήσουμε. Μπορώ να σας ετοιμάσω μια εξατομικευμένη πρόταση.
+
+Με εκτίμηση,
+Protexa Insurance · Risk · Advisory</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+      <div class="email-card">
+        <div class="email-card-title">📱 Viber/SMS — Ζωής</div>
+        <div class="email-subject"><span>Σύντομο: </span></div>
+        <div class="email-body">Καλημέρα [ΟΝΟΜΑ]!
+
+Σκεφτήκατε ποτέ ασφάλεια ζωής; Με €40-60/μήνα εξασφαλίζετε την οικογένειά σας.
+
+Θέλετε να δείτε μια πρόταση; Μπορώ να σας στείλω αναλυτικά.
+
+Protexa | 2110080312</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-followup-email">
+    <div class="email-cards">
+      <div class="email-card">
+        <div class="email-card-title">📧 Follow-Up — Δεν Απάντησε</div>
+        <div class="email-subject"><span>Subject: </span>Επανέρχομαι — Protexa</div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ],
+
+Σας είχα στείλει πρόσφατα μια πρόταση σχετικά με [ΘΕΜΑ].
+
+Επανέρχομαι για να δω αν είχατε την ευκαιρία να τη δείτε και αν έχετε οποιαδήποτε ερώτηση.
+
+Είμαι στη διάθεσή σας για οποιαδήποτε διευκρίνιση.
+
+Με εκτίμηση,
+Protexa | protexagroup@gmail.com</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+      <div class="email-card">
+        <div class="email-card-title">📧 Ευχαριστήριο μετά από τηλεφώνημα</div>
+        <div class="email-subject"><span>Subject: </span>Χάρηκα που μιλήσαμε — Protexa</div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ],
+
+Χαίρομαι που μιλήσαμε σήμερα.
+
+Όπως συζητήσαμε, σας ετοιμάζω πρόταση για [ΠΡΟΪΟΝ] και θα σας την αποστείλω σύντομα.
+
+Αν έχετε οποιαδήποτε ερώτηση στο μεταξύ, μη διστάσετε να επικοινωνήσετε.
+
+Με εκτίμηση,
+Protexa Insurance · Risk · Advisory
+📧 protexagroup@gmail.com | ☎ 2110080312</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-vip-email">
+    <div class="email-cards">
+      <div class="email-card">
+        <div class="email-card-title">⭐ Email — VIP Premium Πελάτης</div>
+        <div class="email-subject"><span>Subject: </span>Ολοκληρωμένη ασφαλιστική επανεξέταση — Protexa</div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ],
+
+Εκτιμώ ιδιαίτερα τη μακροχρόνια συνεργασία μας.
+
+Θα ήθελα να σας προτείνω μια δωρεάν ολοκληρωμένη επανεξέταση των ασφαλιστικών σας αναγκών. Ο στόχος είναι να διασφαλίσουμε ότι οι καλύψεις σας παραμένουν επαρκείς και ότι δεν πληρώνετε περισσότερο από ό,τι χρειάζεστε.
+
+Θα χαρώ να κανονίσουμε ένα σύντομο τηλεφώνημα ή συνάντηση στο γραφείο μας.
+
+Με εκτίμηση,
+Protexa Insurance · Risk · Advisory</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+      <div class="email-card">
+        <div class="email-card-title">📱 SMS — VIP</div>
+        <div class="email-sub"></div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ], εκτιμώ τη συνεργασία μας. Θα ήθελα να κανονίσουμε μια σύντομη συνομιλία για την ασφαλιστική σας επανεξέταση. Πότε σας βολεύει;
+
+Protexa | 2110080312</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-enfia-email">
+    <div class="email-cards">
+      <div class="email-card">
+        <div class="email-card-title">🏛️ Email — Έκπτωση ΕΝΦΙΑ</div>
+        <div class="email-subject"><span>Subject: </span>Έκπτωση ΕΝΦΙΑ έως 20% με ασφάλεια κατοικίας</div>
+        <div class="email-body">Αγαπητέ/ή [ΟΝΟΜΑ],
+
+Ίσως να μην το γνωρίζετε, αλλά με ασφάλεια κατοικίας υπάρχει δυνατότητα να λάβετε έκπτωση στον ΕΝΦΙΑ έως 20%, εφόσον πληρούνται οι νόμιμες προϋποθέσεις ασφάλισης και φορολογητέας αξίας κατοικίας.
+
+Τα προγράμματά μας ξεκινούν από €8 τον μήνα και καλύπτουν πυρκαγιά, σεισμό, πλημμύρα και κλοπή.
+
+Θα χαρώ να σας στείλω μια ενδεικτική προσφορά.
+
+Με εκτίμηση,
+Protexa Insurance · Risk · Advisory
+📧 protexagroup@gmail.com</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+      <div class="email-card">
+        <div class="email-card-title">📱 Viber — ΕΝΦΙΑ</div>
+        <div class="email-body">Καλημέρα [ΟΝΟΜΑ]! 🏠
+
+Με ασφάλεια κατοικίας μπορείτε να κερδίσετε έκπτωση ΕΝΦΙΑ έως 20%!*
+
+Προγράμματα από €8/μήνα.
+Θέλετε να μάθετε περισσότερα;
+
+*Εφόσον πληρούνται οι νόμιμες προϋποθέσεις.
+Protexa | 2110080312</div>
+        <button class="copy-btn" onclick="copyText(this)">📋 Αντιγραφή</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOLLOW-UP AGENT -->
+<div class="page" id="page-followup">
+  <div class="page-header">
+    <div class="page-badge">🔄 Agent 4</div>
+    <div class="page-title">AI Follow-Up Agent</div>
+    <div class="page-sub">Παρακολούθηση εκκρεμοτήτων — σε σειρά προτεραιότητας</div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">📋 Follow-Up Tracker — Top 20 Υψηλής Προτεραιότητας</span><span class="table-count">20 εγγραφές</span></div>
+    <table>
+      <thead><tr><th>#</th><th>Πελάτης</th><th>Θέμα</th><th>Ασφάλιστρα</th><th>Status</th><th>Επόμενη Ενέργεια</th><th>Follow-Up</th></tr></thead>
+      <tbody id="followupTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CAMPAIGN AGENT -->
+<div class="page" id="page-campaign">
+  <div class="page-header">
+    <div class="page-badge">📢 Agent 6</div>
+    <div class="page-title">AI Campaign Agent</div>
+    <div class="page-sub">Έτοιμες καμπάνιες — πρώτη: Κατοικία + ΕΝΦΙΑ</div>
+  </div>
+
+  <div class="campaign-card">
+    <div class="campaign-header">
+      <div class="campaign-title">🏠 Καμπάνια #1 — Κατοικία & Έκπτωση ΕΝΦΙΑ</div>
+      <div class="campaign-target">Στόχος: 839 πελάτες Auto χωρίς Κατοικία</div>
+    </div>
+    <div class="campaign-body">
+      <div class="campaign-section">
+        <div class="campaign-section-title">🎯 Στόχος Καμπάνιας</div>
+        <div class="campaign-text">Να πουλήσουμε ασφάλεια κατοικίας σε πελάτες που ήδη εμπιστεύονται την Protexa για το αυτοκίνητό τους. Εκτιμώμενο conversion 5-10% = 42-84 νέα συμβόλαια × €180 = €7.500-€15.000 νέα παραγωγή.</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">📞 Τηλεφωνικό Script</div>
+        <div class="campaign-text">«Καλημέρα κύριε/α [ΟΝΟΜΑ], μιλάει ο [ΟΝΟΜΑ ΣΑΣ] από την Protexa. Βλέπω ότι έχετε χρόνια μαζί μας την ασφάλεια αυτοκινήτου και θα ήθελα να σας ενημερώσω για κάτι που ίσως σας ενδιαφέρει. Έχουμε προγράμματα ασφάλειας κατοικίας από €8 τον μήνα — και υπάρχει δυνατότητα έκπτωσης στον ΕΝΦΙΑ έως 20%. Έχετε 2 λεπτά να σας πω λίγα περισσότερα;»</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">✉️ Email</div>
+        <div class="campaign-text">Subject: Ασφαλίστε το σπίτι σας — Έκπτωση ΕΝΦΙΑ έως 20%
+
+Αγαπητέ/ή [ΟΝΟΜΑ], χρόνια συνεργαζόμαστε για την ασφάλεια αυτοκινήτου σας. Θα ήθελα να σας προτείνω κάτι επιπλέον: ασφάλεια κατοικίας από €8/μήνα με δυνατότητα έκπτωσης ΕΝΦΙΑ έως 20%. Στείλτε μου μήνυμα για ενδεικτική προσφορά.</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">🔄 Follow-Up μετά 3 ημέρες</div>
+        <div class="campaign-text">«Επανέρχομαι σχετικά με την πρόταση για ασφάλεια κατοικίας. Έχετε σκεφτεί κάτι; Μπορώ να σας ετοιμάσω μια προσφορά σε 10 λεπτά.»</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">🔄 Follow-Up μετά 7 ημέρες</div>
+        <div class="campaign-text">Τελευταία επαφή. Σύντομο SMS: «Κύριε/α [ΟΝΟΜΑ], η προσφορά για κατοικία ισχύει ακόμα. Πείτε μου αν θέλετε να τη δούμε μαζί.»</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">📱 Social Media Post</div>
+        <div class="campaign-text">🏠 Ασφάλισε το σπίτι σου σε 1 λεπτό.
+Κάλυψη για φωτιά, σεισμό, πλημμύρα — από €8/μήνα.
++ Δυνατότητα έκπτωσης ΕΝΦΙΑ έως 20%.*
+
+📩 Στείλε μήνυμα για προσφορά.
+
+*Εφόσον πληρούνται οι νόμιμες προϋποθέσεις.
+#Protexa #ΑσφάλειαΚατοικίας #ΕΝΦΙΑ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="campaign-card">
+    <div class="campaign-header">
+      <div class="campaign-title">❤️ Καμπάνια #2 — Ασφάλεια Ζωής</div>
+      <div class="campaign-target">Στόχος: πελάτες >€500 χωρίς ζωή</div>
+    </div>
+    <div class="campaign-body">
+      <div class="campaign-section">
+        <div class="campaign-section-title">📞 Script</div>
+        <div class="campaign-text">«Κύριε/α [ΟΝΟΜΑ], σκεφτήκατε ποτέ ασφάλεια ζωής; Με €40-60 τον μήνα εξασφαλίζετε την οικογένειά σας. Μπορώ να σας ετοιμάσω μια πρόταση χωρίς δέσμευση;»</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">📱 SMS</div>
+        <div class="campaign-text">Καλημέρα [ΟΝΟΜΑ]! Έχουμε προγράμματα ασφάλειας ζωής από €40/μήνα. Θέλετε μια πρόταση; Protexa | 2110080312</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RENEWAL AGENT -->
+<div class="page" id="page-renewal">
+  <div class="page-header">
+    <div class="page-badge">🔄 Renewal Agent</div>
+    <div class="page-title">Ληξιάριο Ανανεώσεων</div>
+    <div class="page-sub">Protexa — 167 συμβόλαια · Ενημερωμένο 14/05/2026</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card" style="border-color:rgba(226,75,74,0.4)">
+      <div class="stat-label">🔴 Έχουν ήδη λήξει</div>
+      <div class="stat-value" style="color:#FF6B6B" id="r_expiered">39</div>
+      <div class="stat-sub">Χρειάζονται άμεση ενέργεια</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(226,75,74,0.3)">
+      <div class="stat-label">🟠 Λήγουν σήμερα</div>
+      <div class="stat-value" style="color:#FF8C42" id="r_today">4</div>
+      <div class="stat-sub">Κάλεσε τώρα</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(255,140,0,0.3)">
+      <div class="stat-label">🟡 Λήγουν έως 7 μέρες</div>
+      <div class="stat-value" style="color:#FFA500" id="r_7days">69</div>
+      <div class="stat-sub">Προτεραιότητα εβδομάδας</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(41,182,216,0.3)">
+      <div class="stat-label">🔵 Λήγουν έως 30 μέρες</div>
+      <div class="stat-value" style="color:#29B6D8" id="r_30days">54</div>
+      <div class="stat-sub">Προγραμμάτισε επαφή</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    <button class="tab active" onclick="filterRenewal('all',this)">Όλα (167)</button>
+    <button class="tab" onclick="filterRenewal('expiered',this)">🔴 Έληξαν (39)</button>
+    <button class="tab" onclick="filterRenewal('today',this)">🟠 Σήμερα (4)</button>
+    <button class="tab" onclick="filterRenewal('7days',this)">🟡 7 μέρες (69)</button>
+    <button class="tab" onclick="filterRenewal('30days',this)">🔵 30 μέρες (54)</button>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title" id="renewalTitle">Όλα τα συμβόλαια</span>
+      <input type="text" id="renewalSearch" placeholder="Αναζήτηση πελάτη..." oninput="searchRenewal()" style="background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;color:#fff;font-size:12px;font-family:inherit;outline:none;width:200px;">
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Πελάτης</th>
+          <th>Ημ. Λήξης</th>
+          <th>Ημέρες</th>
+          <th>Ποσό (€)</th>
+          <th>Κατάσταση</th>
+          <th>Ενέργεια</th>
+        </tr>
+      </thead>
+      <tbody id="renewalTbody"></tbody>
+    </table>
+  </div>
+
+  <div class="campaign-card" style="margin-top:16px">
+    <div class="campaign-header">
+      <div class="campaign-title">📞 Scripts Ανανέωσης — Έτοιμα για χρήση</div>
+    </div>
+    <div class="campaign-body" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="campaign-section">
+        <div class="campaign-section-title">🔴 Για συμβόλαιο που ΕΧΕΙ ληξει</div>
+        <div class="campaign-text">"Καλημέρα κύριε/α [ΟΝΟΜΑ], μιλάει η Natalia από την Protexa. Σας καλώ γιατί το ασφαλιστήριό σας έληξε στις [ΗΜΕΡΟΜΗΝΙΑ] και θέλαμε να το τακτοποιήσουμε το συντομότερο. Μπορούμε να ανανεώσουμε τώρα τηλεφωνικά — χρειάζεται μόνο 2 λεπτά. Σας βολεύει;"</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">🟡 Για συμβόλαιο που ΛΗΓΕΙ σύντομα</div>
+        <div class="campaign-text">"Καλημέρα κύριε/α [ΟΝΟΜΑ], μιλάει η Natalia από την Protexa. Σας καλώ γιατί το ασφαλιστήριό σας λήγει σε [Χ] ημέρες, στις [ΗΜΕΡΟΜΗΝΙΑ]. Θέλατε να το ανανεώσουμε; Η τιμή παραμένει ίδια — μπορούμε να το κάνουμε τώρα;"</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">📱 SMS — Υπενθύμιση λήξης</div>
+        <div class="campaign-text">Αγαπητέ/ή [ΟΝΟΜΑ], το ασφαλιστήριό σας λήγει στις [ΗΜΕΡΟΜΗΝΙΑ]. Επικοινωνήστε μαζί μας για ανανέωση. Protexa | 2110080312</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">✉️ Email — Ανανέωση</div>
+        <div class="campaign-text">Θέμα: Υπενθύμιση ανανέωσης ασφαλιστηρίου
+
+Αγαπητέ/ή [ΟΝΟΜΑ], το ασφαλιστήριό σας λήγει στις [ΗΜΕΡΟΜΗΝΙΑ]. Για να παραμείνετε καλυμμένοι χωρίς διακοπή, παρακαλούμε επικοινωνήστε μαζί μας. Η ανανέωση γίνεται γρήγορα και απλά.
+
+Protexa | protexagroup@gmail.com | 2110080312</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NATALIA DASHBOARD -->
+<div class="page" id="page-natalia">
+  <div class="page-header">
+    <div class="page-badge">👩‍💼 Υπάλληλος</div>
+    <div class="page-title">Natalia — Καθημερινό Dashboard</div>
+    <div class="page-sub" id="nataliaDate"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card" style="border-color:rgba(226,75,74,0.3)">
+      <div class="stat-label">🔴 Άμεσα σήμερα</div>
+      <div class="stat-value" id="countUrgent">0</div>
+      <div class="stat-sub">Εκκρεμή & επείγοντα</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(255,140,0,0.3)">
+      <div class="stat-label">🟡 Εκδόσεις σήμερα</div>
+      <div class="stat-value" id="countEkdosi">0</div>
+      <div class="stat-sub">Ασφαλιστήρια προς έκδοση</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(41,182,216,0.3)">
+      <div class="stat-label">🔵 Follow-up σήμερα</div>
+      <div class="stat-value" id="countFollowup">0</div>
+      <div class="stat-sub">Πελάτες προς επικοινωνία</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(29,158,117,0.3)">
+      <div class="stat-label">✅ Ολοκληρώθηκαν</div>
+      <div class="stat-value" id="countDone">0</div>
+      <div class="stat-sub">Από το checklist σήμερα</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">✅ Checklist Ημέρας</span>
+        <span class="table-count" id="checkProgress">0/0</span>
+      </div>
+      <div style="padding:14px 18px;" id="checklistContainer">
+        <div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">
+          Πρόσθεσε εργασίες παρακάτω
+        </div>
+      </div>
+      <div style="padding:12px 18px;border-top:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;">
+        <input id="newTaskInput" type="text" placeholder="Νέα εργασία..." style="flex:1;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.15);border-radius:6px;padding:7px 12px;color:#fff;font-size:12px;font-family:inherit;outline:none;">
+        <select id="taskPriority" style="background:#0D1B2A;border:0.5px solid rgba(255,255,255,0.15);border-radius:6px;padding:7px 10px;color:#fff;font-size:11px;font-family:inherit;outline:none;">
+          <option value="urgent">🔴 Άμεσο</option>
+          <option value="today">🟡 Σήμερα</option>
+          <option value="normal">🔵 Κανονικό</option>
+        </select>
+        <button onclick="addTask()" style="background:#29B6D8;border:none;border-radius:6px;padding:7px 14px;color:#0D1B2A;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">+</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">📋 Εκκρεμότητες Ζημιών</span>
+        <button onclick="addZimia()" style="background:rgba(226,75,74,0.15);border:0.5px solid rgba(226,75,74,0.3);color:#FF6B6B;font-size:11px;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:inherit;">+ Νέα</button>
+      </div>
+      <div style="padding:14px 18px;" id="zimiesContainer">
+        <div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Καμία εκκρεμής ζημιά</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">📄 Ασφαλιστήρια προς Έκδοση</span>
+        <button onclick="addEkdosi()" style="background:rgba(255,140,0,0.15);border:0.5px solid rgba(255,140,0,0.3);color:#FFA500;font-size:11px;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:inherit;">+ Νέο</button>
+      </div>
+      <div style="padding:14px 18px;" id="ekdosiContainer">
+        <div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Καμία εκκρεμής έκδοση</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">📞 Follow-Up Πελατών</span>
+        <button onclick="addFollowup()" style="background:rgba(41,182,216,0.15);border:0.5px solid rgba(41,182,216,0.3);color:#29B6D8;font-size:11px;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:inherit;">+ Νέος</button>
+      </div>
+      <div style="padding:14px 18px;" id="followupContainer">
+        <div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Κανένα follow-up</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="campaign-card">
+    <div class="campaign-header" style="background:rgba(29,158,117,0.1)">
+      <div class="campaign-title">📧 Αυτόματο Πρωινό Email — Οδηγίες Setup (Zapier)</div>
+      <div class="campaign-target">Δωρεάν · 10 λεπτά setup · Μία φορά</div>
+    </div>
+    <div class="campaign-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="campaign-section">
+          <div class="campaign-section-title">📋 Google Sheet — Στήλες που χρειάζεσαι</div>
+          <div class="campaign-text">Φύλλο 1: ΕΚΔΟΣΕΙΣ
+→ Πελάτης | Είδος | Ημ/νία | Status
+
+Φύλλο 2: ΖΗΜΙΕΣ
+→ Πελάτης | Περιγραφή | Ημ/νία | Status
+
+Φύλλο 3: FOLLOW-UP
+→ Πελάτης | Λόγος | Τελ. Επαφή | Επόμενη Ενέργεια
+
+Φύλλο 4: CHECKLIST
+→ Εργασία | Προτεραιότητα | Κατηγορία | Επαναλαμβάνεται</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">⚙️ Zapier Setup — Βήμα-βήμα</div>
+          <div class="campaign-text">1. Πήγαινε στο zapier.com (δωρεάν)
+2. "Create Zap" → Trigger: Schedule
+3. Ώρα: 08:30 κάθε πρωί, Δε-Πα
+4. Action 1: Google Sheets → Get Rows
+   (διαβάζει εκκρεμότητες με Status=Ανοιχτό)
+5. Action 2: Gmail → Send Email
+   Προς: natalia@protexa.gr
+   Θέμα: "☀️ Protexa — Πλάνο ημέρας [ημερομηνία]"
+6. Activate → τελείωσες!</div>
+        </div>
+      </div>
+      <div class="campaign-section" style="margin-top:8px">
+        <div class="campaign-section-title">✉️ Template Πρωινού Email (copy-paste στο Zapier)</div>
+        <div class="campaign-text" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px;border:0.5px solid rgba(255,255,255,0.08)">Θέμα: ☀️ Protexa — Πλάνο ημέρας {{today}}
+
+Καλημέρα Natalia!
+
+Εδώ είναι το πλάνο σου για σήμερα:
+
+📄 ΕΚΔΟΣΕΙΣ ΣΗΜΕΡΑ:
+{{ekdoseis_list}}
+
+📋 ΕΚΚΡΕΜΕΙΣ ΖΗΜΙΕΣ:
+{{zimies_list}}
+
+📞 FOLLOW-UP ΣΗΜΕΡΑ:
+{{followup_list}}
+
+✅ CHECKLIST:
+□ Έλεγχος εισερχόμενων email
+□ Ενημέρωση Google Sheet
+□ Επικοινωνία με εκκρεμείς πελάτες
+□ Αποστολή προσφορών που εκκρεμούν
+
+Καλή μέρα!
+Protexa AI Office</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MONTHLY MARKETING AGENT -->
+<div class="page" id="page-marketing">
+  <div class="page-header">
+    <div class="page-badge">🗓️ Marketing Agent</div>
+    <div class="page-title">Monthly Marketing Agent</div>
+    <div class="page-sub">12 έτοιμα banners — ένα για κάθε μήνα. Στυλ: ανθρώπινο, χιουμοριστικό, premium.</div>
+  </div>
+
+  <div class="campaign-card">
+    <div class="campaign-header">
+      <div class="campaign-title">🎨 Οδηγός Στυλ — Protexa Monthly Banners</div>
+      <div class="campaign-target">Βάσει approved παραδείγματος Ιανουαρίου</div>
+    </div>
+    <div class="campaign-body">
+      <div class="campaign-section">
+        <div class="campaign-section-title">✅ Τι δουλεύει — Approved στυλ</div>
+        <div class="campaign-text">• Χιουμοριστικό headline — όχι πωλησιάρικο
+• Ανθρώπινος υπότιτλος — ευχή ή σκέψη, όχι προσφορά
+• "Tip του μήνα" — χρήσιμο, όχι διαφημιστικό
+• CTA ήπιο: "Καλή αρχή σε όλους!" ή "Στείλτε μας μήνυμα"
+• Navy blue background + logo Protexa επάνω
+• 3D εικόνα δεξιά (σπίτι, αυτοκίνητο, ασπίδα, οικογένεια)
+• Footer: Protexa · Insurance · Risk · Advisory</div>
+      </div>
+      <div class="campaign-section">
+        <div class="campaign-section-title">❌ Τι αποφεύγουμε</div>
+        <div class="campaign-text">• "Αγοράστε τώρα!" / "Μην χάσετε την ευκαιρία!"
+• Πολλές τιμές και αριθμοί στο ίδιο banner
+• Φορτωμένο κείμενο — λιγότερο είναι περισσότερο
+• Χρώματα εκτός brand (navy, λευκό, teal/cyan)</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(255,215,0,0.08)">
+        <div class="campaign-title">🎉 Ιανουάριος — APPROVED</div>
+        <div class="campaign-target">✅ Έχεις ήδη αυτό το banner</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Ας αφήσουμε τα απρόοπτα μόνο για τις βασιλόπιτες."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Νέα χρονιά, νέοι στόχοι. Μια μικρή ευχή: να έχουμε υγεία, ηρεμία και όμορφες στιγμές σε κάθε νέο ξεκίνημα.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Ξεκινήστε τη χρονιά με έναν μικρό στόχο τη φορά και λίγο περισσότερο χρόνο για όσα έχουν πραγματική αξία.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλή αρχή σε όλους!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(232,82,122,0.1)">
+        <div class="campaign-title">❤️ Φεβρουάριος</div>
+        <div class="campaign-target">Θέμα: Αγ. Βαλεντίνος / Ζωής</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Αγάπη είναι και να προστατεύεις αυτούς που αγαπάς."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Φέτος τον Αγ. Βαλεντίνο, δώσε στην οικογένειά σου κάτι που διαρκεί περισσότερο από σοκολάτες.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Μια ασφάλεια ζωής δεν είναι έξοδο. Είναι η καλύτερη δήλωση αγάπης που μπορείς να κάνεις.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Στείλτε μας μήνυμα — για εσάς και τους δικούς σας.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(29,158,117,0.1)">
+        <div class="campaign-title">🌸 Μάρτιος</div>
+        <div class="campaign-target">Θέμα: Άνοιξη / Κατοικία</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Η άνοιξη είναι για λουλούδια. Όχι για διαρροές στο ταβάνι."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Η άνοιξη φέρνει ανανέωση. Καλή στιγμή να δούμε και τις ασφαλιστικές σας καλύψεις.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Μετά τον χειμώνα αξίζει ένας γρήγορος έλεγχος στο σπίτι — και στο ασφαλιστήριό του.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλό Μάρτιο από την Protexa!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(125,196,42,0.08)">
+        <div class="campaign-title">🐑 Απρίλιος</div>
+        <div class="campaign-target">Θέμα: Πάσχα / Αυτοκίνητο</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Το αρνί ας μείνει στη σούβλα. Το αυτοκίνητο όχι στην άκρη."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Πάσχα! Χρόνια πολλά, καλές γιορτές και ασφαλές ταξίδι για την επιστροφή.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Πριν φύγετε για χωριό, 2 λεπτά για να ελέγξετε αν η κάλυψη αυτοκινήτου σας είναι ενημερωμένη.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Χρόνια πολλά από την Protexa!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(245,166,35,0.08)">
+        <div class="campaign-title">☀️ Μάιος</div>
+        <div class="campaign-target">Θέμα: Καλοκαίρι έρχεται / Γενική κάλυψη</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Το αντηλιακό προστατεύει εσάς. Η Protexa τα υπόλοιπα."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Μάιο! Το καλοκαίρι έρχεται γρήγορα. Καλό είναι να ξέρουμε ότι όλα είναι σε τάξη πριν φύγουμε.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Πριν τις διακοπές: ελέγξτε αν το σπίτι σας είναι ασφαλισμένο όσο εσείς λείπετε.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλό Μάιο — και καλό καλοκαίρι!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(41,182,216,0.1)">
+        <div class="campaign-title">🏖️ Ιούνιος</div>
+        <div class="campaign-target">Θέμα: Διακοπές / Κατοικία + Ταξιδιωτική</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Φύγετε διακοπές εσείς. Όχι η ηρεμία σας."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό μήνα! Διακοπές σημαίνει ξεκούραση — όχι ανησυχία για το τι γίνεται πίσω σας.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Πριν κλειδώσετε την πόρτα, ελέγξτε αν το σπίτι σας έχει κάλυψη για το διάστημα που λείπετε.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλές διακοπές από την Protexa!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(41,182,216,0.08)">
+        <div class="campaign-title">🗺️ Ιούλιος</div>
+        <div class="campaign-target">Θέμα: Μεσοκαλόκαιρο / Νομική & Οδική</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Το GPS μπορεί να χαθεί. Η κάλυψή σας όχι."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Ιούλιο! Πολλά χιλιόμετρα μπροστά σας αυτό το καλοκαίρι. Ταξιδέψτε με ηρεμία.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Νομική προστασία και οδική βοήθεια — δύο καλύψεις που αξίζουν περισσότερο το καλοκαίρι.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλό Ιούλιο — ασφαλές ταξίδι!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(0,198,224,0.08)">
+        <div class="campaign-title">🏊 Αύγουστος</div>
+        <div class="campaign-target">Θέμα: Αποκορύφωμα καλοκαιριού</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Απρόοπτα μόνο στο πού θα βρούμε ξαπλώστρα."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Αύγουστο! Ο μήνας των διακοπών. Εύχομαι να είναι γεμάτος ήλιο, θάλασσα και ηρεμία.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Αν ταξιδεύετε στο εξωτερικό, η ταξιδιωτική ασφάλεια δεν είναι πολυτέλεια — είναι σύνεση.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλό Αύγουστο από την Protexa!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(245,166,35,0.1)">
+        <div class="campaign-title">🎒 Σεπτέμβριος</div>
+        <div class="campaign-target">Θέμα: Επιστροφή / Ασφαλιστικός έλεγχος</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Back to school, back to work, back to ασφαλιστικός έλεγχος."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Σεπτέμβριο! Νέα σεζόν, νέα ξεκινήματα. Καλή στιγμή για έναν σύντομο έλεγχο των καλύψεών σας.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Αλλάξατε κάτι φέτος; Νέο σπίτι, αυτοκίνητο, παιδί; Ενημερώστε τις καλύψεις σας ανάλογα.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Στείλτε μας μήνυμα για έναν σύντομο έλεγχο.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(74,144,217,0.1)">
+        <div class="campaign-title">🌧️ Οκτώβριος</div>
+        <div class="campaign-target">Θέμα: Φθινόπωρο / Κατοικία πλημμύρα</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Η βροχή είναι ωραία στο τζάμι. Όχι στο σαλόνι."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Οκτώβριο! Το φθινόπωρο έφτασε. Ωραίος καιρός για καφέ στο σπίτι — αρκεί το σπίτι να είναι καλά.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Οι πλημμύρες δεν ειδοποιούν πριν έρθουν. Η κάλυψη κατοικίας σας ναι — ελέγξτε την.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλό Οκτώβριο — ζεστά και ασφαλή!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(139,92,246,0.1)">
+        <div class="campaign-title">💼 Νοέμβριος</div>
+        <div class="campaign-target">Θέμα: Επιχειρήσεις / Αστική ευθύνη</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Στην επιχείρηση ρίσκο μόνο στις ιδέες. Όχι στις καλύψεις."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Καλό Νοέμβριο! Ο μήνας των αποφάσεων για νέα χρονιά. Καλή στιγμή να δούμε και την ασφάλεια της επιχείρησής σας.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Αστική ευθύνη, περιουσία, cyber — τρεις καλύψεις που κάθε επιχείρηση χρειάζεται.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Στείλτε μας μήνυμα για ασφάλεια επιχείρησης.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campaign-card">
+      <div class="campaign-header" style="background:rgba(29,158,117,0.1)">
+        <div class="campaign-title">🎄 Δεκέμβριος</div>
+        <div class="campaign-target">Θέμα: Χριστούγεννα / Ολοκληρωμένη κάλυψη</div>
+      </div>
+      <div class="campaign-body">
+        <div class="campaign-section">
+          <div class="campaign-section-title">Slogan</div>
+          <div class="campaign-text" style="font-style:italic">"Ο Άγιος Βασίλης φέρνει δώρα. Η σωστή ασφάλεια φέρνει ηρεμία."</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Υπότιτλος</div>
+          <div class="campaign-text">Χρόνια πολλά! Σας ευχόμαστε υγεία, χαρά και όμορφες στιγμές με αγαπημένους.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">Tip μήνα</div>
+          <div class="campaign-text">Το καλύτερο δώρο που μπορείς να κάνεις στην οικογένειά σου είναι η ηρεμία. Ελέγξτε τις καλύψεις σας πριν τη νέα χρονιά.</div>
+        </div>
+        <div class="campaign-section">
+          <div class="campaign-section-title">CTA</div>
+          <div class="campaign-text">Καλά Χριστούγεννα από την Protexa!</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOP 30 CLIENTS -->
+<div class="page" id="page-clients">
+  <div class="page-header">
+    <div class="page-badge">👥 Δεδομένα</div>
+    <div class="page-title">Top 30 Πελάτες</div>
+    <div class="page-sub">Ταξινόμηση κατά ετήσιο ασφάλιστρο 2025</div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">🏆 Top 30 κατά Ασφάλιστρο</span><span class="table-count">30 πελάτες</span></div>
+    <table>
+      <thead><tr><th>#</th><th>Πελάτης</th><th>Email</th><th>Ασφάλιστρα 2025</th><th>Κλάδοι</th><th>Score</th></tr></thead>
+      <tbody id="clientsTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- KATIKIA -->
+<div class="page" id="page-katikia">
+  <div class="page-header">
+    <div class="page-badge">🏠 Στόχοι</div>
+    <div class="page-title">Top 20 Στόχοι Κατοικίας</div>
+    <div class="page-sub">Πελάτες με αυτοκίνητο χωρίς κατοικία — σε σειρά προτεραιότητας</div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">🏠 Στόχοι για Ασφάλεια Κατοικίας</span><span class="table-count">20 πελάτες</span></div>
+    <table>
+      <thead><tr><th>#</th><th>Πελάτης</th><th>Email</th><th>Ασφάλιστρα 2025</th><th>Κατηγορία</th><th>Ενέργεια</th></tr></thead>
+      <tbody id="katikiaTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ZWIS -->
+<div class="page" id="page-zwis">
+  <div class="page-header">
+    <div class="page-badge">❤️ Στόχοι</div>
+    <div class="page-title">Top 20 Στόχοι Ζωής</div>
+    <div class="page-sub">Πελάτες >€300 χωρίς ασφάλεια ζωής</div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><span class="table-title">❤️ Στόχοι για Ασφάλεια Ζωής</span><span class="table-count">20 πελάτες</span></div>
+    <table>
+      <thead><tr><th>#</th><th>Πελάτης</th><th>Email</th><th>Ασφάλιστρα 2025</th><th>Κατηγορία</th><th>Ενέργεια</th></tr></thead>
+      <tbody id="zwisTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const LIXIARIO_DATA = [{"name": "ΓΙΑΝΝΗ ΕΛΒΑΝΑ", "lixis": "09/05/2026", "poso": 0.0, "meres": -5, "status": "Έληξε"}, {"name": "GURWINDER SINGH", "lixis": "09/05/2026", "poso": 337.55, "meres": -5, "status": "Έληξε"}, {"name": "ΠΡΕΣΒΕΙΑ ΣΛΟΒΑΚΙΑΣ", "lixis": "09/05/2026", "poso": 0.0, "meres": -5, "status": "Έληξε"}, {"name": "BERND SKAZA", "lixis": "09/05/2026", "poso": 154.0, "meres": -5, "status": "Έληξε"}, {"name": "PEQINI GURIE", "lixis": "09/05/2026", "poso": 242.88, "meres": -5, "status": "Έληξε"}, {"name": "ΔΟΥΡΑΛΗΣ ΦΩΤΙΟΣ ΝΙΚ.", "lixis": "09/05/2026", "poso": 134.53, "meres": -5, "status": "Έληξε"}, {"name": "CELEMENGO OLIVIA (ΙΩΑΝΝΑ)", "lixis": "09/05/2026", "poso": 91.46, "meres": -5, "status": "Έληξε"}, {"name": "ΦΩΤΟΠΟΥΛΟΣ ΜΑΡΙΟΣ", "lixis": "09/05/2026", "poso": 162.74, "meres": -5, "status": "Έληξε"}, {"name": "ΠΑΠΑΔΟΠΟΥΛΟΣ ΣΠΑΡΤΑΚΟΣ", "lixis": "09/05/2026", "poso": 386.79, "meres": -5, "status": "Έληξε"}, {"name": "ΓΙΑΝΝΗ ΕΛΒΑΝΑ", "lixis": "10/05/2026", "poso": 388.94, "meres": -4, "status": "Έληξε"}, {"name": "ΓΙΑΝΝΗ ΕΛΒΑΝΑ", "lixis": "10/05/2026", "poso": 17.78, "meres": -4, "status": "Έληξε"}, {"name": "ΠΡΕΣΒΕΙΑ ΣΛΟΒΑΚΙΑΣ", "lixis": "10/05/2026", "poso": 377.32, "meres": -4, "status": "Έληξε"}, {"name": "ΠΡΕΣΒΕΙΑ ΣΛΟΒΑΚΙΑΣ", "lixis": "10/05/2026", "poso": -346.11, "meres": -4, "status": "Έληξε"}, {"name": "ΠΟΛΥΚΑΝΔΡΙΤΗΣ ΔΗΜΗΤΡΙΟΣ", "lixis": "10/05/2026", "poso": 210.83, "meres": -4, "status": "Έληξε"}, {"name": "ΠΙΧΛΙΝΣΚΑΑ ΑΝΤΖΕΛΙΚΑ", "lixis": "10/05/2026", "poso": 137.65, "meres": -4, "status": "Έληξε"}, {"name": "ΚΑΡΑΜΠΕΡΗ ΒΑΣΙΛΙΚΗ", "lixis": "10/05/2026", "poso": 68.12, "meres": -4, "status": "Έληξε"}, {"name": "ΚΑΝΑΛΗΣ ΛΕΩΝΙΔΑΣ", "lixis": "10/05/2026", "poso": 53.48, "meres": -4, "status": "Έληξε"}, {"name": "ΜΑΣΕΛΗΣ ΙΩΑΝΝΗΣ", "lixis": "10/05/2026", "poso": 122.55, "meres": -4, "status": "Έληξε"}, {"name": "ΑΡΓΥΡΟΣ ΓΕΩΡΓΙΟΣ", "lixis": "10/05/2026", "poso": 112.58, "meres": -4, "status": "Έληξε"}, {"name": "ΑΡΓΥΡΟΣ ΓΕΩΡΓΙΟΣ", "lixis": "10/05/2026", "poso": -112.58, "meres": -4, "status": "Έληξε"}, {"name": "ΑΡΓΥΡΟΣ ΓΕΩΡΓΙΟΣ", "lixis": "10/05/2026", "poso": 71.5, "meres": -4, "status": "Έληξε"}, {"name": "ΚΑΡΑΜΠΕΡΗ ΒΑΣΙΛΙΚΗ", "lixis": "10/05/2026", "poso": 11.01, "meres": -4, "status": "Έληξε"}, {"name": "GURWINDER SINGH", "lixis": "11/05/2026", "poso": 83.07, "meres": -3, "status": "Έληξε"}, {"name": "ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ", "lixis": "11/05/2026", "poso": 141.12, "meres": -3, "status": "Έληξε"}, {"name": "TRIANTOS KATERINA", "lixis": "11/05/2026", "poso": 73.95, "meres": -3, "status": "Έληξε"}, {"name": "ΖΑΦΕΙΡΑΚΟΣ ΣΠΥΡΙΔΩΝ", "lixis": "11/05/2026", "poso": 70.15, "meres": -3, "status": "Έληξε"}, {"name": "ΤΑΛΛΙΟΣ ΟΡΕΣΤΗΣ", "lixis": "11/05/2026", "poso": 99.74, "meres": -3, "status": "Έληξε"}, {"name": "ΑΡΓΥΡΗΣ ΝΙΚΟΛΑΟΣ", "lixis": "11/05/2026", "poso": 146.69, "meres": -3, "status": "Έληξε"}, {"name": "HASA KLEMEND", "lixis": "12/05/2026", "poso": 0.0, "meres": -2, "status": "Έληξε"}, {"name": "ΦΙΛΟΠΟΥΛΟΥ ΜΑΡΙΑ", "lixis": "12/05/2026", "poso": 215.87, "meres": -2, "status": "Έληξε"}, {"name": "ΠΑΝΟΥ ΚΩΝΣΤΑΝΤΙΝΑ", "lixis": "12/05/2026", "poso": 350.5, "meres": -2, "status": "Έληξε"}, {"name": "ΜΠΙΝΙΑΡΗΣ ΣΤΥΛΙΑΝΟΣ", "lixis": "12/05/2026", "poso": 97.48, "meres": -2, "status": "Έληξε"}, {"name": "ΖΑΦΕΙΡΑΚΟΣ ΓΕΩΡΓΙΟΣ", "lixis": "12/05/2026", "poso": 69.76, "meres": -2, "status": "Έληξε"}, {"name": "STARZYNSKA MONIKA", "lixis": "12/05/2026", "poso": 100.94, "meres": -2, "status": "Έληξε"}, {"name": "HASA KLEMEND", "lixis": "13/05/2026", "poso": 374.02, "meres": -1, "status": "Έληξε"}, {"name": "ΒΛΑΧΟΠΟΥΛΟΣ ΒΑΣΙΛΗΣ", "lixis": "13/05/2026", "poso": 105.54, "meres": -1, "status": "Έληξε"}, {"name": "ΒΛΑΧΟΠΟΥΛΟΣ ΒΑΣΙΛΗΣ", "lixis": "13/05/2026", "poso": 198.09, "meres": -1, "status": "Έληξε"}, {"name": "ΚΑΛΙΤΣΟΥΝΑΚΗΣ ΝΙΚΟΛΑΟΣ", "lixis": "13/05/2026", "poso": 157.67, "meres": -1, "status": "Έληξε"}, {"name": "ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ", "lixis": "13/05/2026", "poso": 155.07, "meres": -1, "status": "Έληξε"}, {"name": "ΖΑΧΑΡΙΑΣ ΙΩΑΝΝΗΣ", "lixis": "14/05/2026", "poso": 198.54, "meres": 0, "status": "Λήγει Σήμερα"}, {"name": "ΚΑΤΣΙΑΚΟΥ ΓΕΩΡΓΙΑ", "lixis": "14/05/2026", "poso": 139.33, "meres": 0, "status": "Λήγει Σήμερα"}, {"name": "SUNSHINE HELLAS ΜΟΝΟΠΡΟΣΩΠΗ ΙΚΕ", "lixis": "14/05/2026", "poso": 26.51, "meres": 0, "status": "Λήγει Σήμερα"}, {"name": "ΠΑΝΑΓΟΠΟΥΛΟΥ ΧΡΙΣΤΙΝΑ", "lixis": "14/05/2026", "poso": 113.36, "meres": 0, "status": "Λήγει Σήμερα"}, {"name": "ΔΟΥΑΝΑΛΑΚΗΣ ΘΕΟΔΩΡΟΣ", "lixis": "15/05/2026", "poso": 54.03, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΒΑΣΙΛΟΠΟΥΛΟΣ ΘΕΟΔΩΡΟΣ", "lixis": "15/05/2026", "poso": 85.53, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΒΑΣΙΛΟΠΟΥΛΟΣ ΘΕΟΔΩΡΟΣ", "lixis": "15/05/2026", "poso": 56.53, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΒΑΣΙΛΟΠΟΥΛΟΣ ΘΕΟΔΩΡΟΣ", "lixis": "15/05/2026", "poso": 67.42, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΒΑΣΙΛΟΠΟΥΛΟΣ ΘΕΟΔΩΡΟΣ", "lixis": "15/05/2026", "poso": 56.17, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΤΣΟΥΤΣΟΥΡΑ ΑΙΚΑΤΕΡΙΝΗ", "lixis": "15/05/2026", "poso": 154.75, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΤΣΟΥΤΣΟΥΡΑ ΑΙΚΑΤΕΡΙΝΗ", "lixis": "15/05/2026", "poso": 130.86, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΛΕΚΚΑΣ ΘΕΟΦΑΝΗΣ", "lixis": "15/05/2026", "poso": 82.58, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΓΚΟΥΣΗΣ ΑΝΑΣΤΑΣΙΟΣ", "lixis": "15/05/2026", "poso": 37.7, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "COBO ALEKSANDER", "lixis": "15/05/2026", "poso": 78.31, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "COBO ALEKSANDER", "lixis": "15/05/2026", "poso": -42.62, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ROKITA TOMASZ", "lixis": "15/05/2026", "poso": 128.91, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΣΙΔΗΡΟΠΟΥΛΟΥ ΕΛΕΝΗ", "lixis": "15/05/2026", "poso": 139.0, "meres": 1, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΠΟΥΝΤΡΗΣ ΓΕΩΡΓΙΟΣ", "lixis": "16/05/2026", "poso": 73.02, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΡΑΦΤΑΚΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ", "lixis": "16/05/2026", "poso": 53.0, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΓΑΛΑΤΟΥΔΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ", "lixis": "16/05/2026", "poso": 58.0, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "XHAFERI DURIM", "lixis": "16/05/2026", "poso": 0.0, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΛΕΚΚΑΣ ΑΝΑΣΤΑΣΙΟΣ", "lixis": "16/05/2026", "poso": 67.96, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΕΞΕΡΤΖΟΓΛΟΥ ΧΑΡΙΛΑΟΣ", "lixis": "16/05/2026", "poso": 98.18, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΤΣΙΡΛΗΣ ΣΤΕΦΑΝΟΣ", "lixis": "16/05/2026", "poso": 65.49, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΟΥΓΚΡΟΣ ΙΩΑΝΝΗΣ", "lixis": "16/05/2026", "poso": 149.0, "meres": 2, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.", "lixis": "17/05/2026", "poso": 272.07, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΧΙΩΤΗΣ ΔΗΜΗΤΡΙΟΣ", "lixis": "17/05/2026", "poso": 196.85, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΦΩΤΟΠΟΥΛΟΣ ΒΑΣΙΛΕΙΟΣ", "lixis": "17/05/2026", "poso": 92.16, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "XHAFERI DURIM", "lixis": "17/05/2026", "poso": 310.0, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΚΩΝΣΤΑΝΤΟΠΟΥΛΟΣ ΧΡΗΣΤΟΣ", "lixis": "17/05/2026", "poso": 74.2, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΧΙΩΤΗ ΧΑΡΑΛΑΜΠΙΑ", "lixis": "17/05/2026", "poso": 104.0, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "LUXELANE IKE", "lixis": "17/05/2026", "poso": 15.01, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΧΑΛΚΙΟΠΟΥΛΟΣ ΒΑΣΙΛΕΙΟΣ", "lixis": "17/05/2026", "poso": 13.75, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΚΩΝΣΤΑΝΤΟΠΟΥΛΟΣ ΧΡΗΣΤΟΣ", "lixis": "17/05/2026", "poso": 14.71, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΧΙΩΤΗ ΧΑΡΑΛΑΜΠΙΑ", "lixis": "17/05/2026", "poso": 6.88, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "LUXELANE IKE", "lixis": "17/05/2026", "poso": 569.9, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "LUXELANE IKE", "lixis": "17/05/2026", "poso": -116.41, "meres": 3, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΠΑΠΑΔΟΜΑΝΩΛΑΚΗ ΜΑΡΙΑ", "lixis": "18/05/2026", "poso": 146.48, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.", "lixis": "18/05/2026", "poso": 271.44, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.", "lixis": "18/05/2026", "poso": 271.44, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "MIJAILOVIC LEONTINA", "lixis": "18/05/2026", "poso": 239.82, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "MIJAILOVIC LEONTINA", "lixis": "18/05/2026", "poso": 6.45, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "GJYSHJA DALIP", "lixis": "18/05/2026", "poso": 123.25, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ", "lixis": "18/05/2026", "poso": 31.0, "meres": 4, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΟΥΚΡΑΝΙΑΣ", "lixis": "19/05/2026", "poso": 832.29, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΟΥΚΡΑΝΙΑΣ", "lixis": "19/05/2026", "poso": 0.0, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΕΡΚΟΥΡΗΣ ΜΙΧΑΗΛ", "lixis": "19/05/2026", "poso": 143.48, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΘΕΟΔΩΡΟΥ ΝΙΚΟΛΑΟΣ", "lixis": "19/05/2026", "poso": 33.5, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΘΕΟΔΩΡΟΥ ΝΙΚΟΛΑΟΣ", "lixis": "19/05/2026", "poso": 95.99, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΗΤΡΟΠΟΥΛΟΥ ΘΕΟΔΩΡΑ", "lixis": "19/05/2026", "poso": 239.57, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΚΟΣΚΙΝΙΩΤΗΣ ΑΓΓΕΛΟΣ", "lixis": "19/05/2026", "poso": 100.0, "meres": 5, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.", "lixis": "20/05/2026", "poso": 745.7, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΠΑΠΑΣΤΑΙΚΟΥΔΗ ΜΑΡΙΑ", "lixis": "20/05/2026", "poso": 244.29, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΛΕΞΑΚΗΣ ΤΗΛΕΜΑΧΟΣ", "lixis": "20/05/2026", "poso": 97.99, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "MARIN MONICA", "lixis": "20/05/2026", "poso": 26.5, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΚΟΥΖΕΛΗΣ ΛΕΩΝΙΔΑΣ", "lixis": "20/05/2026", "poso": 249.0, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.", "lixis": "20/05/2026", "poso": 30.0, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΒΙΝΓΚΡΕ ΕΒΙΓΙΑ", "lixis": "20/05/2026", "poso": 173.41, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΟΥΓΚΡΟΣ ΔΗΜΗΤΡΙΟΣ", "lixis": "20/05/2026", "poso": 59.83, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΝΑΣΤΑΣΟΠΟΥΛΟΣ ΔΗΜΗΤΡΙΟΣ", "lixis": "20/05/2026", "poso": 124.4, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΝΤΑΛΙΑΣ ΑΘΑΝΑΣΙΟΣ", "lixis": "20/05/2026", "poso": 78.1, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "NIKOLLARI ALKETA", "lixis": "20/05/2026", "poso": 0.0, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΚΟΣΚΙΝΙΩΤΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ", "lixis": "20/05/2026", "poso": 115.0, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "MARIN MONICA", "lixis": "20/05/2026", "poso": 137.0, "meres": 6, "status": "Λήγει έως 7 ημέρες"}, {"name": "GHULAM JHAFAR", "lixis": "21/05/2026", "poso": 54.03, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΑΛΛΗΣ ΣΩΚΡΑΤΗΣ", "lixis": "21/05/2026", "poso": 280.05, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΔΕΛΕΓΚΟΥ ΝΑΤΑΛΙΑ-ΕΛΕΝΗ", "lixis": "21/05/2026", "poso": 158.43, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΛΙΒΑΝΟΣ ΠΑΝΑΓΙΩΤΗΣ", "lixis": "21/05/2026", "poso": 51.09, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "NIKOLLARI ALKETA", "lixis": "21/05/2026", "poso": 292.0, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΠΟΝΟΒΑ ΜΑΡΙΑ ΕΛΕΝΗ", "lixis": "21/05/2026", "poso": 124.79, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΜΠΟΝΟΒΑ ΜΑΡΙΑ ΕΛΕΝΗ", "lixis": "21/05/2026", "poso": -69.28, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΖΕΡΜΠΙΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ", "lixis": "21/05/2026", "poso": 161.0, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΚΑΛΟΓΕΡΟΠΟΥΛΟΥ ΑΝΔΡΟΝΙΚΗ", "lixis": "21/05/2026", "poso": 69.0, "meres": 7, "status": "Λήγει έως 7 ημέρες"}, {"name": "ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ", "lixis": "22/05/2026", "poso": 205.19, "meres": 8, "status": "Λήγει έως 30 ημέρες"}, {"name": "XHELAJ ARBEN", "lixis": "22/05/2026", "poso": 151.27, "meres": 8, "status": "Λήγει έως 30 ημέρες"}, {"name": "XHELAJ ARBEN", "lixis": "22/05/2026", "poso": 0.0, "meres": 8, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΑΛΕΣΙΑΔΑ ΣΟΦΙΑ", "lixis": "22/05/2026", "poso": 86.28, "meres": 8, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΑΝΤΑ ΙΩΑΝΝΑ", "lixis": "22/05/2026", "poso": 250.84, "meres": 8, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΑΛΟΓΕΡΟΠΟΥΛΟΣ ΑΝΤΩΝΙΟΣ", "lixis": "23/05/2026", "poso": 175.32, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΑΛΟΓΕΡΟΠΟΥΛΟΣ ΑΝΤΩΝΙΟΣ", "lixis": "23/05/2026", "poso": 128.27, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΕΛΜΑΣΙΑΝ ΦΛΩΡΑ ΤΑΝΙΑ", "lixis": "23/05/2026", "poso": 112.0, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΤΣΙΚΡΙΤΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ", "lixis": "23/05/2026", "poso": 155.19, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΓΙΑΝΝΑΚΟΠΟΥΛΟΥ ΘΕΟΔΩΡΑ", "lixis": "23/05/2026", "poso": 52.39, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΒΟΛΟΝΑΚΗΣ ΔΗΜΗΤΡΙΟΣ", "lixis": "23/05/2026", "poso": 57.49, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΦΡΑΤΖΕΣΚΟΣ ΧΑΤΖΗΔΗΜΗΤΡΙΟΥ ΔΙΟΝΥΣΙΟΣ", "lixis": "23/05/2026", "poso": 152.06, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ", "lixis": "23/05/2026", "poso": 0.0, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΣΠΑΤΑΣ ΛΟΥΚΑΣ", "lixis": "23/05/2026", "poso": 176.32, "meres": 9, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΡΩΣΙΑΣ", "lixis": "24/05/2026", "poso": 989.95, "meres": 10, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΧΑΤΖΗΔΑΚΗ ΜΑΡΙΑ ΧΑΤΖΗΔΑΚΗ ΑΙΚΑΤΕΡΙΝΗ", "lixis": "24/05/2026", "poso": 183.0, "meres": 10, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΔΙΟΝΥΣΟΠΟΥΛΟΣ ΓΕΩΡΓΙΟΣ", "lixis": "24/05/2026", "poso": 54.97, "meres": 10, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΡΩΣΙΑΣ", "lixis": "24/05/2026", "poso": 30.0, "meres": 10, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ", "lixis": "24/05/2026", "poso": 406.78, "meres": 10, "status": "Λήγει έως 30 ημέρες"}, {"name": "SMIRNOV ALEXEI", "lixis": "25/05/2026", "poso": 155.02, "meres": 11, "status": "Λήγει έως 30 ημέρες"}, {"name": "LUXELANE IKE", "lixis": "25/05/2026", "poso": 529.84, "meres": 11, "status": "Λήγει έως 30 ημέρες"}, {"name": "LUXELANE IKE", "lixis": "25/05/2026", "poso": 18.0, "meres": 11, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΡΩΜΑΙΟΣ ΘΕΟΦΑΝΗΣ", "lixis": "25/05/2026", "poso": 32.75, "meres": 11, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΙΧΑΛΑΚΟΠΟΥΛΟΥ ΙΩΑΝΝΑ", "lixis": "25/05/2026", "poso": 287.0, "meres": 11, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΒΑΣΙΛΕΙΟΥ ΕΥΑΓΓΕΛΙΑ", "lixis": "26/05/2026", "poso": 492.07, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "KHURTSIDZE SHOTA", "lixis": "26/05/2026", "poso": 145.26, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΑΡΑΓΚΙΟΖΗ ΣΟΥΛΤΑΝΑ", "lixis": "26/05/2026", "poso": 166.65, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "STARZYNSKI ARTUR ADAM", "lixis": "26/05/2026", "poso": 85.56, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΒΟΡΥΛΛΑΣ ΓΑΒΡΙΗΛ", "lixis": "26/05/2026", "poso": 68.97, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΑΡΑΓΚΙΟΖΗ ΣΟΥΛΤΑΝΑ", "lixis": "26/05/2026", "poso": 152.48, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΓΙΑΛΕΛΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ", "lixis": "26/05/2026", "poso": 76.96, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΟΥΤΣΑΦΤΑΚΗ ΜΑΡΙΑ", "lixis": "26/05/2026", "poso": 171.32, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΓΚΟΥΣΗΣ ΑΝΑΣΤΑΣΙΟΣ", "lixis": "26/05/2026", "poso": 69.4, "meres": 12, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ", "lixis": "27/05/2026", "poso": 207.55, "meres": 13, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ", "lixis": "27/05/2026", "poso": 0.0, "meres": 13, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ", "lixis": "27/05/2026", "poso": 820.44, "meres": 13, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΑΣΛΑΡΙΝΟΣ ΔΗΜΗΤΡΗΣ", "lixis": "27/05/2026", "poso": 220.28, "meres": 13, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΠΙΝΙΑΡΗΣ ΣΤΥΛΙΑΝΟΣ", "lixis": "27/05/2026", "poso": 160.4, "meres": 13, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΑΝΑΓΟΠΟΥΛΟΥ ΧΡΙΣΤΙΝΑ", "lixis": "28/05/2026", "poso": 232.5, "meres": 14, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΗΤΣΟΠΟΥΛΟΣ ΝΙΚΟΛΑΟΣ", "lixis": "28/05/2026", "poso": 105.35, "meres": 14, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΧΑΜΖΑΙ ΣΕΝΑΝΤΑ", "lixis": "28/05/2026", "poso": 137.65, "meres": 14, "status": "Λήγει έως 30 ημέρες"}, {"name": "LUXELANE IKE", "lixis": "28/05/2026", "poso": 192.33, "meres": 14, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΑΦΟΙ ΑΠΟΣΤ ΣΙΑΤΡΑΒΑΝΗ ΟΕ", "lixis": "28/05/2026", "poso": 94.79, "meres": 14, "status": "Λήγει έως 30 ημέρες"}, {"name": "SMATI ALICJA", "lixis": "29/05/2026", "poso": 30.0, "meres": 15, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΟΥΠΑΡΙΤΣΑΣ ΦΩΤΙΟΣ", "lixis": "29/05/2026", "poso": 172.74, "meres": 15, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΑΡΟΥΛΑΚΗ ΠΑΝΑΓΙΩΤΑ", "lixis": "29/05/2026", "poso": 199.4, "meres": 15, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΟΥΝΕΛΑΣ ΣΤΥΛΙΑΝΟΣ", "lixis": "29/05/2026", "poso": 67.0, "meres": 15, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΟΝΤΟΓΕΩΡΓΗΣ ΝΙΚΟΛΑΟΣ", "lixis": "29/05/2026", "poso": 288.97, "meres": 15, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΠΡΕΣΒΕΙΑ ΣΛΟΒΕΝΙΑΣ", "lixis": "30/05/2026", "poso": 699.92, "meres": 16, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΤΣΑΚΑΛΗΣ ΤΑΞΙΑΡΧΗΣ", "lixis": "30/05/2026", "poso": 25.0, "meres": 16, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΚΩΤΙΔΗ ΡΑΧΗΛ", "lixis": "30/05/2026", "poso": 141.41, "meres": 16, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΓΚΟΥΣΗΣ ΘΕΟΔΩΡΟΣ", "lixis": "30/05/2026", "poso": 276.35, "meres": 16, "status": "Λήγει έως 30 ημέρες"}, {"name": "CONSULTANSY AND STRUCTURES", "lixis": "31/05/2026", "poso": 413.26, "meres": 17, "status": "Λήγει έως 30 ημέρες"}, {"name": "ΜΑΡΑΓΚΟΥΔΑΚΗ ΒΑΡΒΑΡΑ", "lixis": "31/05/2026", "poso": 70.16, "meres": 17, "status": "Λήγει έως 30 ημέρες"}];
+
+const PROTEXA_DATA = {"stats":{"total":415792.68,"n_total":938,"n_premium":63,"n_500":210,"mean":443.28},"top30":[{"Πελάτης":"ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.","Email":"perikles_moutevelis@afoimouteveli.gr","Ασφάλιστρα 2025":9728.67,"Κλάδοι":"Αυτοκίνητο, Σκάφη","Κατηγορία":"Premium >1000€","Score":8},{"Πελάτης":"ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ","Email":"Proodosae@gmail.com","Ασφάλιστρα 2025":6613.82,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΤΣΑΚΑΛΗΣ ΤΑΞΙΑΡΧΗΣ","Email":"tsakalisprotection@gmail.com","Ασφάλιστρα 2025":6188.62,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΡΩΣΙΑΣ","Email":"embraf@otenet.gr","Ασφάλιστρα 2025":5745.98,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΓΕΝΙΚΟ ΠΡΟΞΕΝΕΙΟ ΓΕΩΡΓΙΑΣ","Email":"saloniki.con@mfa.gov.ge","Ασφάλιστρα 2025":3966.29,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ","Email":"sakis.chrysiko@gmail.com","Ασφάλιστρα 2025":3922.86,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"TEORA IKE","Email":"b.kritikos@hotmail.com","Ασφάλιστρα 2025":3908.52,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΓΓΑΡΙΑΣ","Email":"edit.sipos@mfa.gov.hu","Ασφάλιστρα 2025":3708.27,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"Γ.Μ.Ι. ΚΑΝΑΚΗΣ Ο.Ε","Email":"","Ασφάλιστρα 2025":3557.46,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΚΡΑΝΙΑΣ","Email":"emb_gr@mfa.gov.ua","Ασφάλιστρα 2025":3349.08,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ","Email":"ateny.amb.sekretariat@msz.gov.pl","Ασφάλιστρα 2025":3274.17,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΖΗΤΑ ΕΜΠΟΡΙΑ ΑΓΡΟΤΙΚΩΝ ΚΑΙ","Email":"agoralinardos@outlook.com.gr","Ασφάλιστρα 2025":3191.78,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΣΠΗΛΙΟΠΟΥΛΟΣ ΓΕΩΡΓΙΟΣ","Email":"chrisgtra@hotmail.com","Ασφάλιστρα 2025":2668.32,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΦΕΓΓΑΡΑΣ ΦΟΙΒΟΣ","Email":"df@eftc.pl","Ασφάλιστρα 2025":2604.1,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΛΕΚΚΑ ΜΑΡΙΑ","Email":"maria.k.lekka@gmail.com","Ασφάλιστρα 2025":2449.79,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΦΥΛΑΚΤΟΣ ΓΑΒΡΙΗΛ-ΟΔΥΣΣΕΑΣ","Email":"gabrielphilactou@yahoo.com","Ασφάλιστρα 2025":2420.63,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"LUXELANE IKE","Email":"","Ασφάλιστρα 2025":2282.07,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΚΑΡΑΚΩΣΤΑΣ ΑΡΙΣΤΕΙΔΗΣ","Email":"aris.krk@gmail.com","Ασφάλιστρα 2025":2191.87,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"SPIDER SECURITY IEΠΥΑ ΕΕ","Email":"spidersec1@gmail.com","Ασφάλιστρα 2025":1937.09,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΣΛΟΒΕΝΙΑΣ","Email":"vat@gov.si","Ασφάλιστρα 2025":1801.87,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΚΑΝΤΑ ΙΩΑΝΝΑ","Email":"jokanta@icloud.com","Ασφάλιστρα 2025":1765.84,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΒΕΙΟΓΛΑΝΗΣ ΣΤΑΥΡΟΣ","Email":"beioglanis3@gmail.com","Ασφάλιστρα 2025":1719.65,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΜΠΙΝΙΑΡΗΣ ΣΤΥΛΙΑΝΟΣ","Email":"sbiniaris@gmail.com","Ασφάλιστρα 2025":1602.76,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"IVO SILHAVY","Email":"petero55g@yahoo.com","Ασφάλιστρα 2025":1546.77,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΤΗΣ ΔΗΜΟΚΡΑΤΙΑΣ ΤΗΣ ΚΟΥΒΑΣ","Email":"consuladogr@embacuba.gr","Ασφάλιστρα 2025":1540.46,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"NAZARENKO LARYSA","Email":"syboja@gmail.com","Ασφάλιστρα 2025":1538.01,"Κλάδοι":"Ζωής","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΠΑΠΑΒΡΑΝΟΥΣΗΣ ΔΗΜΗΤΡΙΟΣ","Email":"geaog967@otenet.gr","Ασφάλιστρα 2025":1528.53,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":6},{"Πελάτης":"ΦΥΛΑΚΤΟΣ ΧΡΗΣΤΟΣ","Email":"christo@philactou.com","Ασφάλιστρα 2025":1526.66,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"ΓΙΑΝΝΗ ΕΛΒΑΝΑ","Email":"elvis122@hotmail.gr","Ασφάλιστρα 2025":1517.28,"Κλάδοι":"Αυτοκίνητο","Κατηγορία":"Premium >1000€","Score":7},{"Πελάτης":"TASHI ARBENI","Email":"entelamertiri@yahoo.gr","Ασφάλιστρα 2025":1512.66,"Κλάδοι":"Κατοικία","Κατηγορία":"Premium >1000€","Score":6}],"cross20":[{"Πελάτης":"ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.","Email":"perikles_moutevelis@afoimouteveli.gr","Τι έχει σήμερα":"Αυτοκίνητο, Σκάφη","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":9728.67,"Φράση τηλεφώνου":"Κύριε/α ΑΦΟΙ, έχετε ήδη καλή κάλυψη. Σκεφτήκατε ασφάλεια ζωής; Με €40-60/μήνα προστατεύετε την οικογένειά σας."},{"Πελάτης":"ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ","Email":"Proodosae@gmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":6613.82,"Φράση τηλεφώνου":"Κύριε/α ΠΡΟΟΔΟΣ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΤΣΑΚΑΛΗΣ ΤΑΞΙΑΡΧΗΣ","Email":"tsakalisprotection@gmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":6188.62,"Φράση τηλεφώνου":"Κύριε/α ΤΣΑΚΑΛΗΣ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΡΩΣΙΑΣ","Email":"embraf@otenet.gr","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":5745.98,"Φράση τηλεφώνου":"Κύριε/α ΠΡΕΣΒΕΙΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΓΕΝΙΚΟ ΠΡΟΞΕΝΕΙΟ ΓΕΩΡΓΙΑΣ","Email":"saloniki.con@mfa.gov.ge","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3966.29,"Φράση τηλεφώνου":"Κύριε/α ΓΕΝΙΚΟ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ","Email":"sakis.chrysiko@gmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3922.86,"Φράση τηλεφώνου":"Κύριε/α ΑΦΟΙ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"TEORA IKE","Email":"b.kritikos@hotmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3908.52,"Φράση τηλεφώνου":"Κύριε/α TEORA, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΓΓΑΡΙΑΣ","Email":"edit.sipos@mfa.gov.hu","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3708.27,"Φράση τηλεφώνου":"Κύριε/α ΠΡΕΣΒΕΙΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"Γ.Μ.Ι. ΚΑΝΑΚΗΣ Ο.Ε","Email":"","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3557.46,"Φράση τηλεφώνου":"Κύριε/α Γ.Μ.Ι., βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΚΡΑΝΙΑΣ","Email":"emb_gr@mfa.gov.ua","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3349.08,"Φράση τηλεφώνου":"Κύριε/α ΠΡΕΣΒΕΙΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ","Email":"ateny.amb.sekretariat@msz.gov.pl","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3274.17,"Φράση τηλεφώνου":"Κύριε/α ΠΡΕΣΒΕΙΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΖΗΤΑ ΕΜΠΟΡΙΑ ΑΓΡΟΤΙΚΩΝ ΚΑΙ","Email":"agoralinardos@outlook.com.gr","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":3191.78,"Φράση τηλεφώνου":"Κύριε/α ΖΗΤΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΣΠΗΛΙΟΠΟΥΛΟΣ ΓΕΩΡΓΙΟΣ","Email":"chrisgtra@hotmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":2668.32,"Φράση τηλεφώνου":"Κύριε/α ΣΠΗΛΙΟΠΟΥΛΟΣ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΦΕΓΓΑΡΑΣ ΦΟΙΒΟΣ","Email":"df@eftc.pl","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":2604.1,"Φράση τηλεφώνου":"Κύριε/α ΦΕΓΓΑΡΑΣ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΛΕΚΚΑ ΜΑΡΙΑ","Email":"maria.k.lekka@gmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":2449.79,"Φράση τηλεφώνου":"Κύριε/α ΛΕΚΚΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΦΥΛΑΚΤΟΣ ΓΑΒΡΙΗΛ-ΟΔΥΣΣΕΑΣ","Email":"gabrielphilactou@yahoo.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":2420.63,"Φράση τηλεφώνου":"Κύριε/α ΦΥΛΑΚΤΟΣ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"LUXELANE IKE","Email":"","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":2282.07,"Φράση τηλεφώνου":"Κύριε/α LUXELANE, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΚΑΡΑΚΩΣΤΑΣ ΑΡΙΣΤΕΙΔΗΣ","Email":"aris.krk@gmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":2191.87,"Φράση τηλεφώνου":"Κύριε/α ΚΑΡΑΚΩΣΤΑΣ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"SPIDER SECURITY IEΠΥΑ ΕΕ","Email":"spidersec1@gmail.com","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":1937.09,"Φράση τηλεφώνου":"Κύριε/α SPIDER, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΣΛΟΒΕΝΙΑΣ","Email":"vat@gov.si","Τι έχει σήμερα":"Αυτοκίνητο","Τι να του προτείνω":"Κατοικία, Ζωής, Νομική Προστασία, Αστική Ευθύνη","Ασφάλιστρα 2025":1801.87,"Φράση τηλεφώνου":"Κύριε/α ΠΡΕΣΒΕΙΑ, βλέπω ότι έχετε ασφάλεια αυτοκινήτου μαζί μας. Θα ήθελα να σας προτείνω ασφάλεια κατοικίας — από €15/μήνα πλήρης κάλυψη."}],"katikia20":[{"Πελάτης":"ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.","Email":"perikles_moutevelis@afoimouteveli.gr","Ασφάλιστρα 2025":9728.67,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ","Email":"Proodosae@gmail.com","Ασφάλιστρα 2025":6613.82,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΤΣΑΚΑΛΗΣ ΤΑΞΙΑΡΧΗΣ","Email":"tsakalisprotection@gmail.com","Ασφάλιστρα 2025":6188.62,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΡΩΣΙΑΣ","Email":"embraf@otenet.gr","Ασφάλιστρα 2025":5745.98,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΓΕΝΙΚΟ ΠΡΟΞΕΝΕΙΟ ΓΕΩΡΓΙΑΣ","Email":"saloniki.con@mfa.gov.ge","Ασφάλιστρα 2025":3966.29,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ","Email":"sakis.chrysiko@gmail.com","Ασφάλιστρα 2025":3922.86,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"TEORA IKE","Email":"b.kritikos@hotmail.com","Ασφάλιστρα 2025":3908.52,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΓΓΑΡΙΑΣ","Email":"edit.sipos@mfa.gov.hu","Ασφάλιστρα 2025":3708.27,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"Γ.Μ.Ι. ΚΑΝΑΚΗΣ Ο.Ε","Email":"","Ασφάλιστρα 2025":3557.46,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΚΡΑΝΙΑΣ","Email":"emb_gr@mfa.gov.ua","Ασφάλιστρα 2025":3349.08,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ","Email":"ateny.amb.sekretariat@msz.gov.pl","Ασφάλιστρα 2025":3274.17,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΖΗΤΑ ΕΜΠΟΡΙΑ ΑΓΡΟΤΙΚΩΝ ΚΑΙ","Email":"agoralinardos@outlook.com.gr","Ασφάλιστρα 2025":3191.78,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΣΠΗΛΙΟΠΟΥΛΟΣ ΓΕΩΡΓΙΟΣ","Email":"chrisgtra@hotmail.com","Ασφάλιστρα 2025":2668.32,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΦΕΓΓΑΡΑΣ ΦΟΙΒΟΣ","Email":"df@eftc.pl","Ασφάλιστρα 2025":2604.1,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΛΕΚΚΑ ΜΑΡΙΑ","Email":"maria.k.lekka@gmail.com","Ασφάλιστρα 2025":2449.79,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΦΥΛΑΚΤΟΣ ΓΑΒΡΙΗΛ-ΟΔΥΣΣΕΑΣ","Email":"gabrielphilactou@yahoo.com","Ασφάλιστρα 2025":2420.63,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"LUXELANE IKE","Email":"","Ασφάλιστρα 2025":2282.07,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΚΑΡΑΚΩΣΤΑΣ ΑΡΙΣΤΕΙΔΗΣ","Email":"aris.krk@gmail.com","Ασφάλιστρα 2025":2191.87,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"SPIDER SECURITY IEΠΥΑ ΕΕ","Email":"spidersec1@gmail.com","Ασφάλιστρα 2025":1937.09,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΣΛΟΒΕΝΙΑΣ","Email":"vat@gov.si","Ασφάλιστρα 2025":1801.87,"Κατηγορία":"Premium >1000€"}],"zwis20":[{"Πελάτης":"ΑΦΟΙ ΜΟΥΤΕΒΕΛΗ ΕΠΕ & ΣΙΑ Ε.Ε.","Email":"perikles_moutevelis@afoimouteveli.gr","Ασφάλιστρα 2025":9728.67,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΟΟΔΟΣ ΙΧΘΥΕΜΠΟΡΙΚΗ ΑΕ","Email":"Proodosae@gmail.com","Ασφάλιστρα 2025":6613.82,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΤΣΑΚΑΛΗΣ ΤΑΞΙΑΡΧΗΣ","Email":"tsakalisprotection@gmail.com","Ασφάλιστρα 2025":6188.62,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΡΩΣΙΑΣ","Email":"embraf@otenet.gr","Ασφάλιστρα 2025":5745.98,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΓΕΝΙΚΟ ΠΡΟΞΕΝΕΙΟ ΓΕΩΡΓΙΑΣ","Email":"saloniki.con@mfa.gov.ge","Ασφάλιστρα 2025":3966.29,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΑΦΟΙ ΧΡΥΣΙΚΟΠΟΥΛΟΙ ΟΕ","Email":"sakis.chrysiko@gmail.com","Ασφάλιστρα 2025":3922.86,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"TEORA IKE","Email":"b.kritikos@hotmail.com","Ασφάλιστρα 2025":3908.52,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΓΓΑΡΙΑΣ","Email":"edit.sipos@mfa.gov.hu","Ασφάλιστρα 2025":3708.27,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"Γ.Μ.Ι. ΚΑΝΑΚΗΣ Ο.Ε","Email":"","Ασφάλιστρα 2025":3557.46,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΟΥΚΡΑΝΙΑΣ","Email":"emb_gr@mfa.gov.ua","Ασφάλιστρα 2025":3349.08,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΠΟΛΩΝΙΑΣ","Email":"ateny.amb.sekretariat@msz.gov.pl","Ασφάλιστρα 2025":3274.17,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΖΗΤΑ ΕΜΠΟΡΙΑ ΑΓΡΟΤΙΚΩΝ ΚΑΙ","Email":"agoralinardos@outlook.com.gr","Ασφάλιστρα 2025":3191.78,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΣΠΗΛΙΟΠΟΥΛΟΣ ΓΕΩΡΓΙΟΣ","Email":"chrisgtra@hotmail.com","Ασφάλιστρα 2025":2668.32,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΦΕΓΓΑΡΑΣ ΦΟΙΒΟΣ","Email":"df@eftc.pl","Ασφάλιστρα 2025":2604.1,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΛΕΚΚΑ ΜΑΡΙΑ","Email":"maria.k.lekka@gmail.com","Ασφάλιστρα 2025":2449.79,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΦΥΛΑΚΤΟΣ ΓΑΒΡΙΗΛ-ΟΔΥΣΣΕΑΣ","Email":"gabrielphilactou@yahoo.com","Ασφάλιστρα 2025":2420.63,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"LUXELANE IKE","Email":"","Ασφάλιστρα 2025":2282.07,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΚΑΡΑΚΩΣΤΑΣ ΑΡΙΣΤΕΙΔΗΣ","Email":"aris.krk@gmail.com","Ασφάλιστρα 2025":2191.87,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"SPIDER SECURITY IEΠΥΑ ΕΕ","Email":"spidersec1@gmail.com","Ασφάλιστρα 2025":1937.09,"Κατηγορία":"Premium >1000€"},{"Πελάτης":"ΠΡΕΣΒΕΙΑ ΣΛΟΒΕΝΙΑΣ","Email":"vat@gov.si","Ασφάλιστρα 2025":1801.87,"Κατηγορία":"Premium >1000€"}]};
+
+function catBadge(cat) {
+  if (!cat) return '';
+  if (cat.includes('Premium')) return '<span class="badge badge-premium">Premium</span>';
+  if (cat.includes('Καλοί')) return '<span class="badge badge-good">Καλοί</span>';
+  if (cat.includes('Μεσαίοι')) return '<span class="badge badge-mid">Μεσαίοι</span>';
+  return '<span class="badge badge-basic">Βασικοί</span>';
+}
+
+function euro(v) { return '€' + Number(v).toLocaleString('el-GR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(id==='natalia') initNatalia();
+}
+
+
+var currentRenewalFilter = 'all';
+
+function filterRenewal(filter, btn) {
+  currentRenewalFilter = filter;
+  document.querySelectorAll('#page-renewal .tab').forEach(t => t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  var titles = {
+    'all':'Όλα τα συμβόλαια',
+    'expiered':'🔴 Έχουν ληξει',
+    'today':'🟠 Λήγουν σήμερα',
+    '7days':'🟡 Λήγουν έως 7 ημέρες',
+    '30days':'🔵 Λήγουν έως 30 ημέρες'
+  };
+  document.getElementById('renewalTitle').textContent = titles[filter] || 'Όλα';
+  renderRenewal();
+}
+
+function searchRenewal() {
+  renderRenewal();
+}
+
+function calcMeres(lixisStr) {
+  var parts = lixisStr.split('/');
+  var lixisDate = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+  var today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((lixisDate - today) / (1000*60*60*24));
+}
+
+function getStatus(meres) {
+  if (meres < 0) return 'Έληξε';
+  if (meres === 0) return 'Λήγει Σήμερα';
+  if (meres <= 7) return 'Λήγει έως 7 ημέρες';
+  if (meres <= 30) return 'Λήγει έως 30 ημέρες';
+  return 'Ενεργό';
+}
+
+function updateRenewalStats() {
+  var expired=0, today_=0, days7=0, days30=0;
+  LIXIARIO_DATA.forEach(function(r) {
+    var m = calcMeres(r.lixis);
+    if (m < 0) expired++;
+    else if (m === 0) today_++;
+    else if (m <= 7) days7++;
+    else if (m <= 30) days30++;
+  });
+  document.getElementById('r_expiered').textContent = expired;
+  document.getElementById('r_today').textContent = today_;
+  document.getElementById('r_7days').textContent = days7;
+  document.getElementById('r_30days').textContent = days30;
+
+  var tabs = document.querySelectorAll('#page-renewal .tab');
+  if(tabs[0]) tabs[0].textContent = 'Όλα (' + LIXIARIO_DATA.length + ')';
+  if(tabs[1]) tabs[1].textContent = '🔴 Έληξαν (' + expired + ')';
+  if(tabs[2]) tabs[2].textContent = '🟠 Σήμερα (' + today_ + ')';
+  if(tabs[3]) tabs[3].textContent = '🟡 7 μέρες (' + days7 + ')';
+  if(tabs[4]) tabs[4].textContent = '🔵 30 μέρες (' + days30 + ')';
+}
+
+function renderRenewal() {
+  updateRenewalStats();
+  var search = (document.getElementById('renewalSearch').value || '').toUpperCase();
+  var filter = currentRenewalFilter;
+  var data = LIXIARIO_DATA.filter(function(r) {
+    var m = calcMeres(r.lixis);
+    var nameMatch = r.name.toUpperCase().indexOf(search) >= 0;
+    if (!nameMatch) return false;
+    if (filter === 'all') return true;
+    if (filter === 'expiered') return m < 0;
+    if (filter === 'today') return m === 0;
+    if (filter === '7days') return m > 0 && m <= 7;
+    if (filter === '30days') return m > 7 && m <= 30;
+    return true;
+  });
+
+  var statusColor = {
+    'Έληξε': '#FF6B6B',
+    'Λήγει Σήμερα': '#FF8C42',
+    'Λήγει έως 7 ημέρες': '#FFA500',
+    'Λήγει έως 30 ημέρες': '#29B6D8',
+    'Ενεργό': '#1D9E75'
+  };
+  var actionLabel = {
+    'Έληξε': '📞 Άμεση επαφή',
+    'Λήγει Σήμερα': '📞 Κάλεσε τώρα',
+    'Λήγει έως 7 ημέρες': '📞 Αυτή την εβδομάδα',
+    'Λήγει έως 30 ημέρες': '📅 Προγραμμάτισε',
+    'Ενεργό': '✅ OK'
+  };
+
+  var tbody = document.getElementById('renewalTbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px;">Δεν βρέθηκαν εγγραφές</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(function(r, i) {
+    var col = statusColor[r.status] || '#aaa';
+    var act = actionLabel[r.status] || '—';
+    var dynMeres = calcMeres(r.lixis);
+    var dynStatus = getStatus(dynMeres);
+    col = statusColor[dynStatus] || '#aaa';
+    act = actionLabel[dynStatus] || '—';
+    var meresText = dynMeres < 0 ? 'Πριν ' + Math.abs(dynMeres) + ' μέρες' : dynMeres === 0 ? 'Σήμερα!' : 'Σε ' + dynMeres + ' μέρες';
+    var posoText = r.poso > 0 ? '€' + r.poso.toFixed(2) : r.poso < 0 ? '<span style="color:#FF6B6B">€' + r.poso.toFixed(2) + '</span>' : '—';
+    return '<tr>' +
+      '<td style="color:rgba(255,255,255,0.4)">' + (i+1) + '</td>' +
+      '<td><div style="font-size:12px;font-weight:500;color:#fff">' + r.name + '</div></td>' +
+      '<td style="font-size:12px;color:rgba(255,255,255,0.7)">' + r.lixis + '</td>' +
+      '<td style="font-size:12px;color:' + col + '">' + meresText + '</td>' +
+      '<td style="font-size:12px;color:#29B6D8;font-weight:500">' + posoText + '</td>' +
+      '<td><span style="font-size:10px;font-weight:500;color:' + col + ';background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:8px;border:0.5px solid ' + col + '40">' + dynStatus + '</span></td>' +
+      '<td style="font-size:11px;color:rgba(255,255,255,0.6)">' + act + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+var tasks=[], zimies=[], ekdoseis=[], followups=[];
+
+function initNatalia(){
+  var d=new Date();
+  var days=['Κυριακή','Δευτέρα','Τρίτη','Τετάρτη','Πέμπτη','Παρασκευή','Σάββατο'];
+  var months=['Ιανουαρίου','Φεβρουαρίου','Μαρτίου','Απριλίου','Μαΐου','Ιουνίου','Ιουλίου','Αυγούστου','Σεπτεμβρίου','Οκτωβρίου','Νοεμβρίου','Δεκεμβρίου'];
+  document.getElementById('nataliaDate').textContent = days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  renderAll();
+}
+
+function renderAll(){
+  renderTasks(); renderZimies(); renderEkdoseis(); renderFollowups(); updateStats();
+}
+
+function renderTasks(){
+  var c=document.getElementById('checklistContainer');
+  if(tasks.length===0){c.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Πρόσθεσε εργασίες παρακάτω</div>';return;}
+  var priColor={'urgent':'#FF6B6B','today':'#FFA500','normal':'#29B6D8'};
+  var priLabel={'urgent':'🔴','today':'🟡','normal':'🔵'};
+  c.innerHTML=tasks.map((t,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.05);">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${i})" style="width:16px;height:16px;cursor:pointer;accent-color:#29B6D8;">
+      <span style="flex:1;font-size:12px;color:${t.done?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.85)'};text-decoration:${t.done?'line-through':'none'}">${priLabel[t.pri]} ${t.text}</span>
+      <button onclick="removeTask(${i})" style="background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:14px;">×</button>
+    </div>`).join('');
+  var done=tasks.filter(t=>t.done).length;
+  document.getElementById('checkProgress').textContent=done+'/'+tasks.length;
+}
+
+function renderZimies(){
+  var c=document.getElementById('zimiesContainer');
+  if(zimies.length===0){c.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Καμία εκκρεμής ζημιά</div>';return;}
+  c.innerHTML=zimies.map((z,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.05);">
+      <div style="width:7px;height:7px;border-radius:50%;background:${z.done?'#1D9E75':'#FF6B6B'};flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:500;color:#fff;">${z.pelatis}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">${z.desc}</div>
+      </div>
+      <span style="font-size:10px;color:${z.done?'#1D9E75':'#FF6B6B'};cursor:pointer;" onclick="toggleZimia(${i})">${z.done?'✅ Κλειστή':'⏳ Ανοιχτή'}</span>
+      <button onclick="removeZimia(${i})" style="background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;">×</button>
+    </div>`).join('');
+}
+
+function renderEkdoseis(){
+  var c=document.getElementById('ekdosiContainer');
+  if(ekdoseis.length===0){c.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Καμία εκκρεμής έκδοση</div>';return;}
+  c.innerHTML=ekdoseis.map((e,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.05);">
+      <div style="width:7px;height:7px;border-radius:50%;background:${e.done?'#1D9E75':'#FFA500'};flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:500;color:#fff;">${e.pelatis}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">${e.eidos}</div>
+      </div>
+      <span style="font-size:10px;color:${e.done?'#1D9E75':'#FFA500'};cursor:pointer;" onclick="toggleEkdosi(${i})">${e.done?'✅ Εκδόθηκε':'⏳ Εκκρεμεί'}</span>
+      <button onclick="removeEkdosi(${i})" style="background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;">×</button>
+    </div>`).join('');
+}
+
+function renderFollowups(){
+  var c=document.getElementById('followupContainer');
+  if(followups.length===0){c.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:20px 0;">Κανένα follow-up</div>';return;}
+  c.innerHTML=followups.map((f,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.05);">
+      <div style="width:7px;height:7px;border-radius:50%;background:${f.done?'#1D9E75':'#29B6D8'};flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:500;color:#fff;">${f.pelatis}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">${f.logos}</div>
+      </div>
+      <span style="font-size:10px;color:${f.done?'#1D9E75':'#29B6D8'};cursor:pointer;" onclick="toggleFollowup(${i})">${f.done?'✅ Έγινε':'📞 Εκκρεμεί'}</span>
+      <button onclick="removeFollowup(${i})" style="background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;">×</button>
+    </div>`).join('');
+}
+
+function updateStats(){
+  document.getElementById('countUrgent').textContent=tasks.filter(t=>t.pri==='urgent'&&!t.done).length;
+  document.getElementById('countEkdosi').textContent=ekdoseis.filter(e=>!e.done).length;
+  document.getElementById('countFollowup').textContent=followups.filter(f=>!f.done).length;
+  document.getElementById('countDone').textContent=tasks.filter(t=>t.done).length+zimies.filter(z=>z.done).length+ekdoseis.filter(e=>e.done).length+followups.filter(f=>f.done).length;
+}
+
+function addTask(){
+  var inp=document.getElementById('newTaskInput');
+  var pri=document.getElementById('taskPriority').value;
+  if(!inp.value.trim()) return;
+  tasks.push({text:inp.value.trim(),pri:pri,done:false});
+  inp.value=''; renderAll();
+}
+
+function toggleTask(i){tasks[i].done=!tasks[i].done;renderAll();}
+function removeTask(i){tasks.splice(i,1);renderAll();}
+
+function addZimia(){
+  var p=prompt('Όνομα πελάτη:'); if(!p) return;
+  var d=prompt('Περιγραφή ζημιάς:'); if(!d) return;
+  zimies.push({pelatis:p,desc:d,done:false}); renderAll();
+}
+function toggleZimia(i){zimies[i].done=!zimies[i].done;renderAll();}
+function removeZimia(i){zimies.splice(i,1);renderAll();}
+
+function addEkdosi(){
+  var p=prompt('Όνομα πελάτη:'); if(!p) return;
+  var e=prompt('Είδος ασφαλιστηρίου:'); if(!e) return;
+  ekdoseis.push({pelatis:p,eidos:e,done:false}); renderAll();
+}
+function toggleEkdosi(i){ekdoseis[i].done=!ekdoseis[i].done;renderAll();}
+function removeEkdosi(i){ekdoseis.splice(i,1);renderAll();}
+
+function addFollowup(){
+  var p=prompt('Όνομα πελάτη:'); if(!p) return;
+  var l=prompt('Λόγος επικοινωνίας:'); if(!l) return;
+  followups.push({pelatis:p,logos:l,done:false}); renderAll();
+}
+function toggleFollowup(i){followups[i].done=!followups[i].done;renderAll();}
+function removeFollowup(i){followups.splice(i,1);renderAll();}
+
+function showTab(group, id) {
+  const page = document.getElementById('page-' + group);
+  page.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  page.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function copyText(btn) {
+  const body = btn.previousElementSibling.innerText;
+  navigator.clipboard.writeText(body).then(() => {
+    btn.textContent = '✅ Αντιγράφηκε!';
+    setTimeout(() => btn.textContent = '📋 Αντιγραφή', 2000);
+  });
+}
+
+// Populate tables
+window.addEventListener('DOMContentLoaded', () => {
+  const d = new Date();
+  renderRenewal();
+  document.getElementById('appDate').textContent = d.toLocaleDateString('el-GR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // Intelligence table
+  const itb = document.getElementById('intelligenceTbody');
+  PROTEXA_DATA.top30.forEach((r, i) => {
+    itb.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td><div class="client-name">${r['Πελάτης']}</div></td>
+      <td><div class="client-email">${r['Email'] || '—'}</div></td>
+      <td><span class="euro">${euro(r['Ασφάλιστρα 2025'])}</span></td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.6)">${r['Κλάδοι']}</td>
+      <td>${catBadge(r['Κατηγορία'])}</td>
+      <td><div class="score-badge">${r['Score']}</div></td>
+    </tr>`;
+  });
+
+  // Sales table
+  const stb = document.getElementById('salesTbody');
+  const sc = document.getElementById('scriptsContainer');
+  PROTEXA_DATA.cross20.forEach((r, i) => {
+    stb.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td><div class="client-name">${r['Πελάτης']}</div><div class="client-email">${r['Email'] || '—'}</div></td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.6)">${r['Τι έχει σήμερα']}</td>
+      <td style="font-size:11px;color:#29B6D8">${r['Τι να του προτείνω']}</td>
+      <td><span class="euro">${euro(r['Ασφάλιστρα 2025'])}</span></td>
+      <td><span class="badge badge-high">Υψηλή</span></td>
+    </tr>`;
+    sc.innerHTML += `<div class="script-card">
+      <div class="script-header">
+        <div class="script-client">${r['Πελάτης']}</div>
+        <div class="script-amount">${euro(r['Ασφάλιστρα 2025'])}/έτος</div>
+      </div>
+      <div class="script-text">"${r['Φράση τηλεφώνου']}"</div>
+      <div class="script-propose">📋 Πρόταση: ${r['Τι να του προτείνω']}</div>
+    </div>`;
+  });
+
+  // Follow-up table
+  const statuses = ['Εκκρεμεί τηλεφώνημα','Εστάλη email','Αναμονή απάντησης','Εκκρεμεί προσφορά'];
+  const actions = ['Τηλεφώνημα','Email follow-up','SMS υπενθύμιση','Τηλεφώνημα + email'];
+  const ftb = document.getElementById('followupTbody');
+  const days = [1,2,3,1,2,3,5,1,2,3,1,2,3,5,1,2,3,1,2,3];
+  PROTEXA_DATA.cross20.forEach((r, i) => {
+    const today = new Date();
+    const fu = new Date(today); fu.setDate(today.getDate() + days[i]);
+    ftb.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td><div class="client-name">${r['Πελάτης']}</div><div class="client-email">${r['Email'] || 'Χωρίς email'}</div></td>
+      <td style="font-size:11px;color:#29B6D8">Κατοικία + Cross-sell</td>
+      <td><span class="euro">${euro(r['Ασφάλιστρα 2025'])}</span></td>
+      <td><span class="badge ${i%2===0?'badge-high':'badge-mid-pri'}">${statuses[i%4]}</span></td>
+      <td style="font-size:11px">${actions[i%4]}</td>
+      <td style="font-size:11px;color:#29B6D8">${fu.toLocaleDateString('el-GR')}</td>
+    </tr>`;
+  });
+
+  // Clients table
+  const ctb = document.getElementById('clientsTbody');
+  PROTEXA_DATA.top30.forEach((r, i) => {
+    ctb.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td><div class="client-name">${r['Πελάτης']}</div></td>
+      <td><div class="client-email">${r['Email'] || '—'}</div></td>
+      <td><span class="euro">${euro(r['Ασφάλιστρα 2025'])}</span></td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.6)">${r['Κλάδοι']}</td>
+      <td><div class="score-badge">${r['Score']}</div></td>
+    </tr>`;
+  });
+
+  // Katikia table
+  const ktb = document.getElementById('katikiaTbody');
+  PROTEXA_DATA.katikia20.forEach((r, i) => {
+    ktb.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td><div class="client-name">${r['Πελάτης']}</div></td>
+      <td><div class="client-email">${r['Email'] || '—'}</div></td>
+      <td><span class="euro">${euro(r['Ασφάλιστρα 2025'])}</span></td>
+      <td>${catBadge(r['Κατηγορία'])}</td>
+      <td><span style="font-size:11px;color:#29B6D8">📞 Τηλεφώνημα + email κατοικίας</span></td>
+    </tr>`;
+  });
+
+  // Zwis table
+  const ztb = document.getElementById('zwisTbody');
+  PROTEXA_DATA.zwis20.forEach((r, i) => {
+    ztb.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td><div class="client-name">${r['Πελάτης']}</div></td>
+      <td><div class="client-email">${r['Email'] || '—'}</div></td>
+      <td><span class="euro">${euro(r['Ασφάλιστρα 2025'])}</span></td>
+      <td>${catBadge(r['Κατηγορία'])}</td>
+      <td><span style="font-size:11px;color:#29B6D8">📞 Script ζωής + οικογένεια</span></td>
+    </tr>`;
+  });
+});
+</script>
+</body>
+</html>
